@@ -51,10 +51,6 @@ dotnet build .\csharp\RustToolkit.sln
 
 To pair Rust+, open the **Rust+** page, select **Connect Rust+**, complete Steam sign-in, and pair the server/devices in Rust. Select a saved server and choose **Load Map** to display its map.
 
-## Notes application
-
-At startup RustToolkit launches [`notes gui/notes with notepad++.exe`](./notes%20gui/notes%20with%20notepad%2B%2B.exe) with the `notes gui` folder as its working directory. Its adjacent `gup.xml` and `libcurl.dll` are copied alongside it to build/publish output. Windows version metadata identifies the executable as **WinGup for Notepad++ 5.31** (`gup.exe`); it is launched as requested. Verify it opens the intended notes UI on your machine, and check redistribution terms before publishing a release.
-
 ## Roadmap
 
 ### Done
