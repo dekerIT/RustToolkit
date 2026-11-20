@@ -1,0 +1,184 @@
+<UserControl x:Class="RustToolkit.Desktop.Views.RustPlusPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource AppBackground}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="14" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="Rust+ Connection" FontSize="29" FontWeight="Bold" />
+            <TextBlock Text="Pair your Steam account to receive Rust+ smart-alarm and server-pairing events."
+                       Foreground="{StaticResource MutedBrush}"
+                       Margin="0,7,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="18">
+            <StackPanel>
+                <TextBlock Text="CONNECTION STATUS"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="11"
+                           FontWeight="Bold" />
+                <TextBlock x:Name="StatusText"
+                           Text="Rust+ is not connected."
+                           FontSize="16"
+                           TextWrapping="Wrap"
+                           Margin="0,8,0,14" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="ConnectButton"
+                            Content="Connect Rust+"
+                            Background="{StaticResource AccentBrush}"
+                            Click="Connect_Click" />
+                    <Button Content="Reconnect"
+                            Margin="9,0,0,0"
+                            Click="Reconnect_Click" />
+                </StackPanel>
+                <TextBlock x:Name="ErrorText"
+                           Foreground="#F08A78"
+                           TextWrapping="Wrap"
+                           Visibility="Collapsed"
+                           Margin="0,12,0,0" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="4" Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="18">
+            <StackPanel>
+                <TextBlock Text="FIRST-TIME SETUP" FontWeight="SemiBold" />
+                <TextBlock Text="A browser window will open for Steam sign-in. Then use Rust+ in game to pair a server and any devices you want to manage. Paired credentials are encrypted for this Windows user."
+                           Foreground="{StaticResource MutedBrush}"
+                           TextWrapping="Wrap"
+                           Margin="0,7,0,0" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="PAIRED SERVERS"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="11"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10" />
+                <ListBox x:Name="ServerList"
+                         Grid.Row="1"
+                         Background="{StaticResource PanelBackground}"
+                         BorderThickness="0"
+                         Foreground="#F4F6F8"
+                         Padding="8"
+                         SelectionChanged="ServerList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Ip}"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           Margin="0,3,0,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button x:Name="LoadMapButton"
+                        Content="Load Map"
+                        Grid.Row="2"
+                        Margin="0,8,0,14"
+                        IsEnabled="False"
+                        Click="LoadMap_Click" />
+                <TextBlock Grid.Row="3"
+                           Text="PAIRED DEVICES"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="11"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10" />
+                <ListBox x:Name="DeviceList"
+                         Grid.Row="4"
+                         Background="{StaticResource PanelBackground}"
+                         BorderThickness="0"
+                         Foreground="#F4F6F8"
+                         Padding="8"
+                         SelectionChanged="DeviceList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding EntityType}"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           Margin="0,3,0,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <TabControl Grid.Column="2">
+                <TabItem Header="Map">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="MapStatusText"
+                                   Text="Select a paired server to load its map."
+                                   Foreground="{StaticResource MutedBrush}"
+                                   Margin="0,0,0,10"
+                                   TextTrimming="CharacterEllipsis" />
+                        <Border Grid.Row="1"
+                                Background="{StaticResource PanelBackground}"
+                                CornerRadius="8"
+                                ClipToBounds="True">
+                            <Viewbox Stretch="Uniform">
+                                <Canvas x:Name="MapSurface" />
+                            </Viewbox>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Smart Devices">
+                    <Grid Margin="14">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Select a paired device to read its current state. Smart Switches can be controlled here."
+                                   Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="DeviceStatusText"
+                                   Grid.Row="1"
+                                   Text="No device selected."
+                                   FontSize="18"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button x:Name="RefreshDeviceButton"
+                                    Content="Read State"
+                                    IsEnabled="False"
+                                    Click="RefreshDevice_Click" />
+                            <Button x:Name="ToggleDeviceButton"
+                                    Content="Turn On / Off"
+                                    Margin="10,0,0,0"
+                                    IsEnabled="False"
+                                    Click="ToggleDevice_Click" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

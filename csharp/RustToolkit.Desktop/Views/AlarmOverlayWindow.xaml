@@ -1,0 +1,31 @@
+<Window x:Class="RustToolkit.Desktop.Views.AlarmOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowState="Normal"
+        WindowStartupLocation="Manual"
+        Topmost="True"
+        ShowInTaskbar="False"
+        Background="#A51F25"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+    <Grid x:Name="Root" Background="#A51F25">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="RAID ALARM"
+                       HorizontalAlignment="Center"
+                       FontSize="62"
+                       FontWeight="Black"
+                       Foreground="White" />
+            <TextBlock x:Name="ReasonText"
+                       HorizontalAlignment="Center"
+                       FontSize="25"
+                       Foreground="White"
+                       Margin="0,18,0,0" />
+            <TextBlock Text="Press F8 or click to acknowledge"
+                       HorizontalAlignment="Center"
+                       FontSize="16"
+                       Foreground="#E8DADB"
+                       Margin="0,30,0,0" />
+        </StackPanel>
+    </Grid>
+</Window>

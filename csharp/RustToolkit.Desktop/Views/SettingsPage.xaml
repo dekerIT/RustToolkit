@@ -1,0 +1,26 @@
+<UserControl x:Class="RustToolkit.Desktop.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource AppBackground}">
+    <StackPanel>
+        <TextBlock Text="Settings" FontSize="29" FontWeight="Bold" />
+        <TextBlock Text="Application behavior"
+                   Foreground="{StaticResource MutedBrush}"
+                   Margin="0,7,0,20" />
+
+        <Border Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="18">
+            <StackPanel>
+                <CheckBox x:Name="StartupCheckBox"
+                          Content="Start RustToolkit with Windows"
+                          Foreground="#F4F6F8"
+                          FontSize="14"
+                          Checked="StartupCheckBox_Changed"
+                          Unchecked="StartupCheckBox_Changed" />
+                <TextBlock Text="The app minimizes to the system tray when its window is closed."
+                           Foreground="{StaticResource MutedBrush}"
+                           TextWrapping="Wrap"
+                           Margin="0,10,0,0" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

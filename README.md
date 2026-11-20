@@ -1,161 +1,90 @@
 <div align="center">
 
-# 🛠️ RustToolkit
+# RustToolkit
 
-**A modern Windows desktop toolkit for Rust players.**
-Raid calculator · Raid alarm · BattleMetrics server tools
+**Windows desktop companion app for Rust, built with WPF and .NET 10.**
 
-![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-0078D6?logo=windows&logoColor=white)
-![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
-![UI](https://img.shields.io/badge/UI-PySide6-41CD52?logo=qt&logoColor=white)
-![Status](https://img.shields.io/badge/status-in%20development-orange)
+[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)](#quick-start)
+[![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](#quick-start)
+[![Status](https://img.shields.io/badge/status-in%20development-orange)](#roadmap)
 
 </div>
 
----
+RustToolkit is an independent fan-made Rust companion. The current application is the C# desktop app in [`csharp/`](./csharp/). Rust+ sign-in and pairing use Steam and Facepunch services; saved Rust+ credentials are encrypted for the current Windows user with DPAPI.
 
-RustToolkit is a free, fan-made companion app for the game **Rust**. It runs locally on your PC, lives in the system tray, and keeps everything on your machine: no accounts, no cloud, no telemetry.
+## Interface
 
-> [!NOTE]
-> The project is under active development. See the [Roadmap](#-roadmap) for what works today and what is coming.
-
-<!-- Replace with real screenshots once available:
 <p align="center">
-  <img src="assets/screenshots/main.png" width="720" alt="RustToolkit main window">
+  <img src="assets/screenshots/raid-alarm.png" width="49%" alt="RustToolkit raid alarm screen">
+  <img src="assets/screenshots/timers.png" width="49%" alt="RustToolkit timers screen">
 </p>
--->
+<p align="center">
+  <img src="assets/screenshots/rustplus.png" width="49%" alt="RustToolkit Rust+ screen">
+  <img src="assets/screenshots/settings.png" width="49%" alt="RustToolkit settings screen">
+</p>
 
-## ✨ Features
+## Features
 
-| Feature | Status |
-| --- | --- |
-| 🧮 **Raid calculator** framework (structures, categories, explosives) | ✅ Available (data being verified) |
-| 🚨 **Raid alarm**: full-screen flashing alert + siren on selected monitors | ✅ Available |
-| 🔌 **Local HTTP API** to trigger and stop alarms from scripts or other tools | ✅ Available |
-| 🖥️ **System tray** controls, global stop hotkey, Windows startup option | ✅ Available |
-| 🌐 **Server browser** powered by BattleMetrics | 🚧 Planned |
-| 🏆 **Transparent server ranking** | 🚧 Planned |
+- **Raid alarm:** looping siren and full-screen alert; acknowledge with F8, the alert, or the tray.
+- **Timers:** named countdowns saved locally and restored after restarting.
+- **System tray:** keep RustToolkit running in the background; optionally start with Windows.
+- **Rust+:** Steam pairing, Rust+ smart-alarm notifications, and server/device pairing events.
+- **Server map:** load a paired server's map on demand with monuments, players, and event markers.
+- **Smart devices:** read smart-device and storage-monitor state; manually set paired Smart Switches.
+- **Local data:** Rust+ profile and pairing credentials are protected using Windows DPAPI for the current user.
 
-### 🚨 Raid Alarm
+Rust+ map and device data refresh only when requested. Device automation, continuous map updates, and the raid calculator are not implemented yet.
 
-- Manual test alarm and countdown alarm
-- Full-screen flashing on the monitors you choose
-- Siren sound with adjustable volume and repeat
-- **F8** global hotkey or **double-click** the alarm window to acknowledge
-- Minimizes to tray instead of closing, so it keeps watching in the background
-- Optional launch with Windows
+## Quick start
 
-### 🧮 Raid Calculator
-
-A data-driven calculator framework for structures and explosives.
-
-> [!IMPORTANT]
-> Durability, soft/hard side and explosive quantities in `data/raid_data.json` are **deliberately marked unverified** until each value is confirmed from a cited source. Structure names and categories are currently placeholders. No numbers are shown as fact before they are verified.
-
-## 🚀 Quick start
-
-### Option A: Download the EXE
-
-Grab `RustToolkit.exe` from the [Releases](../../releases) page and run it. No installation needed.
-
-### Option B: Run from source
-
-Requirements: **Windows 10 or newer** and **Python 3.11+**.
-
-```bat
-py -3.11 -m venv .venv
-call .venv\Scripts\activate.bat
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python raid_toolkit.py
-```
-
-### Build your own EXE
-
-```bat
-build_exe.bat
-```
-
-The result is written to `dist\RustToolkit.exe`.
-
-## 🔌 Raid Alarm HTTP API
-
-RustToolkit listens on a **loopback-only** endpoint, `127.0.0.1:47800`. It never accepts connections from other machines.
-
-| Action | Request |
-| --- | --- |
-| Trigger an alarm | `POST http://127.0.0.1:47800/alarm?reason=Base+raided` |
-| Stop the alarm | `POST http://127.0.0.1:47800/stop` |
-
-**PowerShell**
+Install the **.NET 10 SDK**, open PowerShell in the repository folder, and run:
 
 ```powershell
-Invoke-WebRequest -Method POST -Uri "http://127.0.0.1:47800/alarm?reason=Base+raided"
-Invoke-WebRequest -Method POST -Uri "http://127.0.0.1:47800/stop"
+dotnet run --project .\csharp\RustToolkit.Desktop\RustToolkit.Desktop.csproj
 ```
 
-**curl**
+Build the solution with:
 
-```bash
-curl -X POST "http://127.0.0.1:47800/alarm?reason=Base+raided"
-curl -X POST "http://127.0.0.1:47800/stop"
+```powershell
+dotnet build .\csharp\RustToolkit.sln
 ```
 
-This makes it easy to hook the alarm into your own scripts or automation.
+To pair Rust+, open the **Rust+** page, select **Connect Rust+**, complete Steam sign-in, and pair the server/devices in Rust. Select a saved server and choose **Load Map** to display its map.
 
-## ⚙️ Configuration and privacy
+## Notes application
 
-| What | Where |
-| --- | --- |
-| Settings | `%LOCALAPPDATA%\RustToolkit\config.json` |
-| Logs | `%LOCALAPPDATA%\RustToolkit\logs\` |
+At startup RustToolkit launches [`notes gui/notes with notepad++.exe`](./notes%20gui/notes%20with%20notepad%2B%2B.exe) with the `notes gui` folder as its working directory. Its adjacent `gup.xml` and `libcurl.dll` are copied alongside it to build/publish output. Windows version metadata identifies the executable as **WinGup for Notepad++ 5.31** (`gup.exe`); it is launched as requested. Verify it opens the intended notes UI on your machine, and check redistribution terms before publishing a release.
 
-- Everything is stored **locally**.
-- The **BattleMetrics token is optional**. It is saved locally and is never included in source code or builds.
+## Roadmap
 
-## 🧪 Development
+### Done
 
-```bat
-python -m compileall -q raid_toolkit.py ui services data scripts tests
-python -m unittest discover -s tests -v
-python scripts\download_icons.py
-```
+- [x] Create the WPF/.NET 10 desktop application shell.
+- [x] Implement the local alarm, F8 acknowledgement, multi-monitor alert, and tray controls.
+- [x] Add persistent named countdown timers and Windows startup setting.
+- [x] Add Rust+ Steam pairing, encrypted local profile storage, and push-alarm notifications.
+- [x] Save paired servers and smart devices.
+- [x] Load a paired server map and display monuments, players, and selected event markers.
+- [x] Read Smart Switch, Smart Alarm, and Storage Monitor state; manually control Smart Switches.
+- [x] Add the current application screenshots to this page.
+- [x] Remove the superseded Python application and its Python build/test code.
 
-The icon script reports that no verified manifest exists until a legitimate, licensed icon source is configured. Missing icons are shown as an English fallback label.
+### Next
 
-To test the alarm manually, open **Raid Alarm** and click **Test Alarm**. Press **F8** or double-click the alarm window to stop it.
+- [x] Launch the supplied notes executable at RustToolkit startup and include its adjacent files in build/publish output.
+- [ ] Verify on the user's machine that the supplied executable opens the intended notes interface.
+- [ ] Confirm licensing/redistribution terms for the supplied notes executable and dependencies before a public release.
+- [ ] Validate Steam login, server/device pairing, map loading, and switch controls with a real Rust+ account/server.
+- [ ] Add robust Rust+ reconnect/status handling.
+- [ ] Add optional map refresh and clearer marker controls.
+- [ ] Add user-configurable smart-device automations.
+- [ ] Implement the raid calculator only after every value has a verified source.
+- [ ] Prepare and test a distributable Windows release.
 
-<details>
-<summary><b>Project structure</b></summary>
+## Build and third-party notices
 
-```
-raid_toolkit.py     # application entry point
-ui/                 # PySide6 interface
-services/           # alarm system, local API, integrations
-data/               # raid data (unverified until sourced)
-assets/             # images and resources
-tests/              # unit tests
-build_exe.bat       # EXE build script
-RaidToolkit.spec    # PyInstaller spec
-requirements.txt
-```
+See [`csharp/README.md`](./csharp/README.md) for development details and [`csharp/THIRD-PARTY-NOTICES.md`](./csharp/THIRD-PARTY-NOTICES.md) for NuGet dependency attribution.
 
-</details>
+## Disclaimer
 
-## 🗺️ Roadmap
-
-- [x] Application shell and raid calculator data framework
-- [x] Local alarm system, tray controls and HTTP API
-- [ ] Verified raid data with cited sources
-- [ ] Licensed item and building icons
-- [ ] BattleMetrics server browser (including map preview)
-- [ ] Transparent server ranking
-- [ ] Screenshots and first public release
-
-## 🤝 Contributing
-
-Issues and pull requests are welcome. If you contribute raid data, please include a **source** for every value. Unverified numbers will not be merged.
-
-## 📜 Disclaimer
-
-RustToolkit is a fan-made project and is **not affiliated with or endorsed by Facepunch Studios**. Rust and related names are trademarks or properties of their respective owners.
+RustToolkit is a fan-made project and is not affiliated with or endorsed by Facepunch Studios. Rust and related names are trademarks or properties of their respective owners.

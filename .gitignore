@@ -1,7 +1,5 @@
-.venv/
-venv/
-dist/
-build/
+**/bin/
+**/obj/
 __pycache__/
 *.py[cod]
 *.log
@@ -9,4 +7,5 @@ __pycache__/
 .env.*
 !.env.example
 *.exe
-!assets/RustMap/battlemetricsmap.exe
+!notes gui/
+!notes gui/**

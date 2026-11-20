@@ -1,0 +1,64 @@
+<UserControl x:Class="RustToolkit.Desktop.Views.AlarmPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource AppBackground}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="Raid Alarm" FontSize="29" FontWeight="Bold" />
+            <TextBlock Text="A local alert you can trigger from the app or the F8 hotkey."
+                       Foreground="{StaticResource MutedBrush}"
+                       Margin="0,7,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="22">
+            <StackPanel>
+                <TextBlock Text="STATUS"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="11"
+                           FontWeight="Bold" />
+                <TextBlock x:Name="StatusText"
+                           Text="READY"
+                           FontSize="25"
+                           FontWeight="SemiBold"
+                           Margin="0,8,0,0" />
+                <TextBlock x:Name="ReasonText"
+                           Foreground="{StaticResource MutedBrush}"
+                           Text="No active alert"
+                           Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button Content="Test Alarm"
+                    Background="{StaticResource AccentBrush}"
+                    Margin="0,0,10,0"
+                    Click="TriggerAlarm_Click" />
+            <Button Content="Stop Alarm"
+                    Click="StopAlarm_Click" />
+        </StackPanel>
+
+        <Border Grid.Row="5"
+                Background="{StaticResource PanelBackground}"
+                CornerRadius="10"
+                Padding="18"
+                Margin="0,20,0,0"
+                VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="Keyboard shortcut" FontWeight="SemiBold" />
+                <TextBlock x:Name="HotkeyText"
+                           Text="F8 — stop the active alarm"
+                           Foreground="{StaticResource MutedBrush}"
+                           Margin="0,5,0,0" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

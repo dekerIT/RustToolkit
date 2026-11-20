@@ -1,0 +1,58 @@
+<Window x:Class="RustToolkit.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RustToolkit"
+        Width="1120"
+        Height="760"
+        MinWidth="900"
+        MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBackground}"
+        Foreground="#F4F6F8"
+        FontFamily="Segoe UI"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="224" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#171C23" BorderBrush="#29323C" BorderThickness="0,0,1,0">
+            <DockPanel Margin="16">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="RUSTTOOLKIT"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Foreground="#F4F6F8"
+                               Margin="7,8,7,30" />
+                    <Button Content="Raid Alarm"
+                            HorizontalContentAlignment="Left"
+                            Margin="0,0,0,7"
+                            Click="ShowAlarmPage_Click" />
+                    <Button Content="Timers"
+                            HorizontalContentAlignment="Left"
+                            Margin="0,0,0,7"
+                            Click="ShowTimersPage_Click" />
+                    <Button Content="Rust+"
+                            HorizontalContentAlignment="Left"
+                            Margin="0,0,0,7"
+                            Click="ShowRustPlusPage_Click" />
+                    <Button Content="Settings"
+                            HorizontalContentAlignment="Left"
+                            Click="ShowSettingsPage_Click" />
+                </StackPanel>
+
+                <TextBlock DockPanel.Dock="Bottom"
+                           Text="LOCAL DESKTOP APP"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="10"
+                           Margin="7,18,7,4" />
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Column="1" Padding="30,26">
+            <ContentControl x:Name="PageHost" />
+        </Border>
+    </Grid>
+</Window>
