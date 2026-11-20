@@ -3,6 +3,7 @@ from __future__ import annotations
 from __future__ import annotations
 
 import ctypes
+from ctypes import wintypes
 import sys
 
 from PySide6.QtCore import Qt, QEvent
@@ -187,7 +188,7 @@ class MainWindow(QMainWindow):
 
     def nativeEvent(self, event_type, message):
         if hasattr(ctypes, "windll") and event_type == b"windows_generic_MSG":
-            msg = ctypes.cast(message, ctypes.POINTER(ctypes.wintypes.MSG)).contents
+            msg = ctypes.cast(message, ctypes.POINTER(wintypes.MSG)).contents
             if msg.message == 0x0312 and msg.wParam == 1:
                 self.alarm_engine.stop()
                 return True, 0
