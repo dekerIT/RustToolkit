@@ -89,27 +89,6 @@ The EXE is generated in:
 dist\RustToolkit.exe
 ```
 
-The build bundles `assets\RustMap` with the app. On launch, the map is extracted
-to `%LOCALAPPDATA%\RustToolkit\BattleMetricsMap` before it starts, so it remains
-available after the one-file app exits.
-
-## GitHub Releases
-
-The GitHub Actions workflow builds `dist\RustToolkit.exe` and attaches it to a
-release when a version tag is pushed. Ensure `assets\RustMap\battlemetricsmap.exe`
-is committed (it is explicitly allowed by `.gitignore`) and that you have the
-right to redistribute the map executable and its supporting files.
-
-After committing the application and map changes, create and push a version tag:
-
-```powershell
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-The workflow creates the GitHub Release with generated notes and the downloadable
-`RustToolkit.exe` asset. Change `v1.0.0` to the next version for future releases.
-
 ## Raid Alarm HTTP API
 
 ```text
