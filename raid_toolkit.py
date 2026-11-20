@@ -1,14 +1,17 @@
-"""Raid Toolkit application entry point."""
+"""RustToolkit application entry point."""
 
 from __future__ import annotations
 
+import logging
 import sys
+from pathlib import Path
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtGui import QIcon
 
 from ui.main_window import MainWindow
+from services.external_app import launch_battlemetrics_map
 from services.logging_config import configure_logging
-from services.external_app import resolve_external_app_path, launch_external_app
 from services.settings import SettingsStore
 
 
@@ -17,11 +20,24 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName("Raid Toolkit")
     app.setOrganizationName("RaidToolkit")
+
+    icon_path = Path(__file__).resolve().parent / "assets" / "rusttoolkit.ico"
+    if icon_path.exists():
+        app.setWindowIcon(QIcon(str(icon_path)))
+
     window = MainWindow()
     window.show()
     settings = SettingsStore()
-    if settings.get("launch_external_app", True):
-        launch_external_app(resolve_external_app_path(settings.get("external_app_path", "")))
+    settings.ensure_defaults()
+    try:
+        launch_battlemetrics_map()
+    except OSError as exc:
+        logging.getLogger(__name__).exception("Failed to launch BattleMetrics map")
+        QMessageBox.warning(
+            window,
+            "BattleMetrics Map",
+            f"Could not start the BattleMetrics map:\n{exc}",
+        )
     return app.exec()
 
 

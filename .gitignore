@@ -1,0 +1,12 @@
+.venv/
+venv/
+dist/
+build/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+!.env.example
+*.exe
+!assets/RustMap/battlemetricsmap.exe
