@@ -39,6 +39,10 @@ RustToolkit is an independent fan-made Rust companion. The current application i
 - **Smart devices:** read smart-device and storage-monitor state; manually set paired Smart Switches.
 - **Local data:** Rust+ profile and pairing credentials are protected using Windows DPAPI for the current user.
 
+## Download
+
+For a guided per-user install, download `RustToolkit-Setup-vX.Y.Z.exe` from the [latest release](https://github.com/dekerIT/RustToolkit/releases/latest). The portable ZIP is also available for users who prefer to unpack and run the app themselves.
+
 ## Getting started
 
 On first launch, choose **Connect Steam / Rust+** or **I'll sign in later — continue**. The siren test, timers, crafting calculator, and settings are available without signing in. To use Rust+, sign in, pair a server and its Smart Alarm/devices in the Rust+ game, then select that server in RustToolkit. A Steam sign-in alone does not pair a server.
@@ -57,6 +61,22 @@ Build the solution with:
 
 ```powershell
 dotnet build .\csharp\RustToolkit.sln
+```
+
+## Project website
+
+The English-language landing page lives in [`site/`](./site/) and will be published to [dekerit.github.io/RustToolkit](https://dekerit.github.io/RustToolkit/) by GitHub Actions. Enable **Settings → Pages → Build and deployment → GitHub Actions** before the first deployment.
+
+To preview it locally in PowerShell:
+
+```powershell
+$preview = Join-Path $env:TEMP "rusttoolkit-site"
+New-Item -ItemType Directory -Path $preview -Force | Out-Null
+Copy-Item .\site\* $preview -Recurse -Force
+$screenshots = Join-Path $preview "assets\screenshots"
+New-Item -ItemType Directory -Path $screenshots -Force | Out-Null
+Copy-Item .\assets\screenshots\*.png $screenshots -Force
+python -m http.server 8000 --directory $preview
 ```
 
 After choosing to continue or connect, subsequent launches open directly to the local alarm page. Disconnecting returns to the welcome screen. The connected Steam ID and pairing status appear on the **Rust+** page. Select a saved server and choose **Load Map** to display its map.
