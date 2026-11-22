@@ -78,4 +78,10 @@ public sealed class RustPlusProfileStore
             CryptographicOperations.ZeroMemory(plaintext);
         }
     }
+
+    public void Delete()
+    {
+        File.Delete($"{_path}.tmp");
+        File.Delete(_path);
+    }
 }

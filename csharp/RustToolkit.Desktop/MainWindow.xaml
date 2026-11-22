@@ -14,11 +14,15 @@
         Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="224" />
+            <ColumnDefinition x:Name="NavigationColumn" Width="224" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="#171C23" BorderBrush="#29323C" BorderThickness="0,0,1,0">
+        <Border x:Name="NavigationPanel"
+                Grid.Column="0"
+                Background="#171C23"
+                BorderBrush="#29323C"
+                BorderThickness="0,0,1,0">
             <DockPanel Margin="16">
                 <StackPanel DockPanel.Dock="Top">
                     <TextBlock Text="RUSTTOOLKIT"
@@ -34,6 +38,10 @@
                             HorizontalContentAlignment="Left"
                             Margin="0,0,0,7"
                             Click="ShowTimersPage_Click" />
+                    <Button Content="Crafting"
+                            HorizontalContentAlignment="Left"
+                            Margin="0,0,0,7"
+                            Click="ShowCraftingPage_Click" />
                     <Button Content="Rust+"
                             HorizontalContentAlignment="Left"
                             Margin="0,0,0,7"

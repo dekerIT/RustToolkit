@@ -31,6 +31,17 @@ public sealed class RustPlusConnectionService : IDisposable
 
     public string Status { get; private set; } = "Rust+ is not connected.";
 
+    public ulong? SteamId
+    {
+        get
+        {
+            lock (_profileGate)
+            {
+                return _profile is { SteamId: > 0 } profile ? profile.SteamId : null;
+            }
+        }
+    }
+
     public event Action<string>? StatusChanged;
     public event Action<string>? ErrorOccurred;
     public event Action<string>? AlarmTriggered;
@@ -126,6 +137,35 @@ public sealed class RustPlusConnectionService : IDisposable
             }
 
             await StartListenerAsync(credentials, cancellationToken);
+        }
+        finally
+        {
+            _operationGate.Release();
+        }
+    }
+
+    public async Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        ThrowIfDisposed();
+        await _operationGate.WaitAsync(cancellationToken);
+        try
+        {
+            await _companionOperationGate.WaitAsync(cancellationToken);
+            try
+            {
+                DisposeListener();
+                lock (_profileGate)
+                {
+                    _store.Delete();
+                    _profile = null;
+                }
+
+                SetStatus("Rust+ is disconnected.");
+            }
+            finally
+            {
+                _companionOperationGate.Release();
+            }
         }
         finally
         {
@@ -296,7 +336,7 @@ public sealed class RustPlusConnectionService : IDisposable
         {
             await listener.ConnectAsync(cancellationToken);
             connected = true;
-            SetStatus("Listening for Rust+ alarms and pairings.");
+            SetStatus(GetListeningStatus());
         }
         finally
         {
@@ -308,7 +348,7 @@ public sealed class RustPlusConnectionService : IDisposable
     }
 
     private void Listener_Connected(object? sender, EventArgs e) =>
-        SetStatus("Listening for Rust+ alarms and pairings.");
+        SetStatus(GetListeningStatus());
 
     private void Listener_Disconnected(object? sender, EventArgs e) =>
         SetStatus("Rust+ notifications disconnected. Select Connect Rust+ to retry.");
@@ -348,11 +388,12 @@ public sealed class RustPlusConnectionService : IDisposable
 
     private void Listener_AlarmTriggered(object? sender, AlarmNotification? alarm)
     {
-        var reason = !string.IsNullOrWhiteSpace(alarm?.Message)
+        var details = !string.IsNullOrWhiteSpace(alarm?.Message)
             ? alarm.Message
             : !string.IsNullOrWhiteSpace(alarm?.Title)
                 ? alarm.Title
                 : "Rust+ Smart Alarm";
+        var reason = $"Rust+ Smart Alarm: {details}";
         AlarmTriggered?.Invoke(reason.Length > 200 ? reason[..200] : reason);
     }
 
@@ -484,6 +525,11 @@ public sealed class RustPlusConnectionService : IDisposable
         Status = status;
         StatusChanged?.Invoke(status);
     }
+
+    private string GetListeningStatus() =>
+        GetServers().Count == 0
+            ? "Steam sign-in complete. Pair a server in Rust+ to see it here; listening for notifications."
+            : "Connected to Rust+ notifications. Listening for alarms and pairings.";
 
     private void DisposeListener()
     {

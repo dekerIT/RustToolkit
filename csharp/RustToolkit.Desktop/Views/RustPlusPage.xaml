@@ -31,14 +31,26 @@
                            FontSize="16"
                            TextWrapping="Wrap"
                            Margin="0,8,0,14" />
+                <TextBlock x:Name="SteamAccountText"
+                           Foreground="{StaticResource MutedBrush}"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,14" />
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="ConnectButton"
                             Content="Connect Rust+"
                             Background="{StaticResource AccentBrush}"
                             Click="Connect_Click" />
                     <Button Content="Reconnect"
+                            x:Name="ReconnectButton"
+                            Visibility="Collapsed"
                             Margin="9,0,0,0"
                             Click="Reconnect_Click" />
+                    <Button Content="Disconnect"
+                            x:Name="DisconnectButton"
+                            Visibility="Collapsed"
+                            Background="#8C3A33"
+                            Margin="9,0,0,0"
+                            Click="Disconnect_Click" />
                 </StackPanel>
                 <TextBlock x:Name="ErrorText"
                            Foreground="#F08A78"
@@ -51,7 +63,7 @@
         <Border Grid.Row="4" Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="18">
             <StackPanel>
                 <TextBlock Text="FIRST-TIME SETUP" FontWeight="SemiBold" />
-                <TextBlock Text="A browser window will open for Steam sign-in. Then use Rust+ in game to pair a server and any devices you want to manage. Paired credentials are encrypted for this Windows user."
+                <TextBlock Text="A browser window will open for Steam sign-in. After connecting, pair a server and its Smart Alarm/devices through Rust+ in game; paired servers will appear here. A Steam sign-in alone does not pair a server. Credentials are encrypted for this Windows user."
                            Foreground="{StaticResource MutedBrush}"
                            TextWrapping="Wrap"
                            Margin="0,7,0,0" />

@@ -24,18 +24,22 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
         InitializeComponent();
         _service = service;
         StatusText.Text = service.Status;
-        ServerList.ItemsSource = service.GetServers();
+        RefreshSavedProfile();
         service.StatusChanged += Service_StatusChanged;
         service.ErrorOccurred += Service_ErrorOccurred;
         service.ServerPaired += Service_ServerPaired;
         service.EntityPaired += Service_EntityPaired;
     }
 
+    public event EventHandler? DisconnectCompleted;
+
     private async void Connect_Click(object sender, RoutedEventArgs e) =>
         await RunConnectionAsync(restore: false);
 
     private async void Reconnect_Click(object sender, RoutedEventArgs e) =>
         await RunConnectionAsync(restore: true);
+
+    public Task BeginConnectionAsync() => RunConnectionAsync(restore: false);
 
     private async Task RunConnectionAsync(bool restore)
     {
@@ -67,7 +71,66 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
         finally
         {
             ConnectButton.IsEnabled = true;
-            ServerList.ItemsSource = _service.GetServers();
+            RefreshSavedProfile();
+        }
+    }
+
+    public void RefreshSavedProfile(Guid? preferredServerId = null)
+    {
+        UpdateAuthenticationButtons();
+
+        var selectedServerId = preferredServerId
+            ?? (ServerList.SelectedItem as RustPlusServerProfile)?.ServerId;
+        var servers = _service.GetServers();
+        ServerList.ItemsSource = servers;
+        ServerList.SelectedItem = servers.FirstOrDefault(server => server.ServerId == selectedServerId)
+            ?? servers.FirstOrDefault();
+        UpdateSelectedServer();
+    }
+
+    private void UpdateAuthenticationButtons()
+    {
+        var steamId = _service.SteamId;
+        var isConnected = steamId is not null;
+        SteamAccountText.Text = steamId is ulong accountId
+            ? $"Steam account connected · SteamID {accountId}"
+            : "Steam account not connected.";
+        ConnectButton.Visibility = isConnected ? Visibility.Collapsed : Visibility.Visible;
+        ReconnectButton.Visibility = isConnected ? Visibility.Visible : Visibility.Collapsed;
+        DisconnectButton.Visibility = isConnected ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private async void Disconnect_Click(object sender, RoutedEventArgs e)
+    {
+        var result = System.Windows.MessageBox.Show(
+            Window.GetWindow(this),
+            "Sign out and remove this Rust+ account, paired servers, and saved device tokens from this PC?",
+            "Disconnect Rust+",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+        if (result != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        DisconnectButton.IsEnabled = false;
+        ErrorText.Visibility = Visibility.Collapsed;
+        StatusText.Text = "Disconnecting from Rust+…";
+        try
+        {
+            await _service.DisconnectAsync();
+            RefreshSavedProfile();
+            DisconnectCompleted?.Invoke(this, EventArgs.Empty);
+        }
+        catch (Exception exception) when (
+            exception is IOException or UnauthorizedAccessException or InvalidOperationException)
+        {
+            ShowError($"Could not disconnect from Rust+: {exception.Message}");
+            RefreshSavedProfile();
+        }
+        finally
+        {
+            DisconnectButton.IsEnabled = _service.SteamId is not null;
         }
     }
 
@@ -335,7 +398,11 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
     }
 
     private void Service_StatusChanged(string status) =>
-        Dispatcher.BeginInvoke(() => StatusText.Text = status);
+        Dispatcher.BeginInvoke(() =>
+        {
+            StatusText.Text = status;
+            UpdateAuthenticationButtons();
+        });
 
     private void Service_ErrorOccurred(string message) =>
         Dispatcher.BeginInvoke(() => ShowError(message));
@@ -343,9 +410,7 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
     private void Service_ServerPaired(RustPlusServerProfile server) =>
         Dispatcher.BeginInvoke(() =>
         {
-            ServerList.ItemsSource = _service.GetServers();
-            ServerList.SelectedItem = server;
-            UpdateSelectedServer();
+            RefreshSavedProfile(server.ServerId);
         });
 
     private void Service_EntityPaired(RustPlusDeviceProfile device) =>

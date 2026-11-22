@@ -31,7 +31,7 @@ public partial class AlarmPage : System.Windows.Controls.UserControl
     }
 
     private void TriggerAlarm_Click(object sender, RoutedEventArgs e) =>
-        _alarmService.Trigger("Manual test");
+        _alarmService.Trigger("TEST: Manual siren check");
 
     private void StopAlarm_Click(object sender, RoutedEventArgs e) => _alarmService.Stop();
 }

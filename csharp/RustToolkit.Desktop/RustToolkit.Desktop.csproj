@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\..\notes gui\**\*">
-      <Link>notes gui\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <Content Include="..\..\notes.exe">
+      <Link>notes\notes.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

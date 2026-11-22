@@ -3,6 +3,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using RustToolkit.Desktop.Services;
 using RustToolkit.Desktop.Views;
@@ -20,8 +22,11 @@ public partial class MainWindow : Window
 
     private readonly AlarmService _alarmService;
     private readonly CountdownTimerService _timerService;
+    private readonly WelcomePage _welcomePage;
     private readonly AlarmPage _alarmPage;
     private readonly TimersPage _timersPage;
+    private readonly CraftingPage _craftingPage;
+    private readonly CraftingDataService _craftingDataService;
     private readonly RustPlusPage _rustPlusPage;
     private readonly SettingsPage _settingsPage;
     private readonly List<AlarmOverlayWindow> _alarmWindows = [];
@@ -30,6 +35,10 @@ public partial class MainWindow : Window
     private bool _hotkeyRegistered;
     private bool _exitRequested;
     private readonly RustPlusConnectionService _rustPlusService;
+    private readonly AppPreferencesStore _preferencesStore;
+    private readonly AppPreferences _preferences;
+    private readonly KeepAwakeService _keepAwakeService;
+    private bool _keepAwakeEnabled;
 
     public MainWindow()
     {
@@ -39,20 +48,51 @@ public partial class MainWindow : Window
         _alarmService = new AlarmService();
         _timerService = new CountdownTimerService(stateStore);
         _rustPlusService = new RustPlusConnectionService(new RustPlusProfileStore());
+        _preferencesStore = new AppPreferencesStore();
+        _preferences = LoadPreferences();
+        _keepAwakeService = new KeepAwakeService();
+        _keepAwakeEnabled = _preferences.KeepAwakeEnabled;
         _alarmPage = new AlarmPage(_alarmService);
         _timersPage = new TimersPage(_timerService);
+        _craftingDataService = new CraftingDataService();
+        _craftingPage = new CraftingPage(_craftingDataService, _preferencesStore, _preferences);
         _rustPlusPage = new RustPlusPage(_rustPlusService);
-        _settingsPage = new SettingsPage(IsStartupEnabled());
+        _welcomePage = new WelcomePage();
+        _welcomePage.ConnectRequested += WelcomePage_ConnectRequested;
+        _welcomePage.ContinueWithoutAccountRequested += WelcomePage_ContinueWithoutAccountRequested;
+        _settingsPage = new SettingsPage(IsStartupEnabled(), _keepAwakeEnabled);
 
         _alarmService.Triggered += AlarmService_Triggered;
         _alarmService.Stopped += AlarmService_Stopped;
         _timerService.NotificationRequested += TimerService_NotificationRequested;
         _timerService.StorageError += TimerService_StorageError;
         _settingsPage.StartupSettingChanged += SettingsPage_StartupSettingChanged;
+        _settingsPage.KeepAwakeSettingChanged += SettingsPage_KeepAwakeSettingChanged;
         _rustPlusService.AlarmTriggered += RustPlusService_AlarmTriggered;
+        _rustPlusPage.DisconnectCompleted += RustPlusPage_DisconnectCompleted;
+
+        if (_keepAwakeEnabled)
+        {
+            try
+            {
+                _keepAwakeService.SetEnabled(true);
+            }
+            catch (Win32Exception exception)
+            {
+                _keepAwakeEnabled = false;
+                _settingsPage.SetKeepAwakeEnabled(false);
+                System.Windows.MessageBox.Show(
+                    this,
+                    $"Could not keep the PC awake:\n{exception.Message}",
+                    "RustToolkit settings",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
 
         _trayIcon = CreateTrayIcon();
-        PageHost.Content = _alarmPage;
+        PageHost.Content = _preferences.OnboardingCompleted ? _alarmPage : _welcomePage;
+        SetNavigationVisible(_preferences.OnboardingCompleted);
     }
 
     private static Forms.NotifyIcon CreateTrayIcon()
@@ -65,7 +105,7 @@ public partial class MainWindow : Window
         };
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Show RustToolkit", null, (_, _) => ShowWindow());
-        menu.Items.Add("Test Alarm", null, (_, _) => CurrentAlarmService()?.Trigger("Tray test"));
+        menu.Items.Add("Test siren", null, (_, _) => CurrentAlarmService()?.Trigger("TEST: Tray siren check"));
         menu.Items.Add("Stop Alarm", null, (_, _) => CurrentAlarmService()?.Stop());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => CurrentWindow()?.ExitApplication());
@@ -119,13 +159,49 @@ public partial class MainWindow : Window
         return nint.Zero;
     }
 
-    private void ShowAlarmPage_Click(object sender, RoutedEventArgs e) => PageHost.Content = _alarmPage;
+    private void ShowAlarmPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_alarmPage);
 
-    private void ShowTimersPage_Click(object sender, RoutedEventArgs e) => PageHost.Content = _timersPage;
+    private void ShowTimersPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_timersPage);
 
-    private void ShowRustPlusPage_Click(object sender, RoutedEventArgs e) => PageHost.Content = _rustPlusPage;
+    private void ShowCraftingPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_craftingPage);
 
-    private void ShowSettingsPage_Click(object sender, RoutedEventArgs e) => PageHost.Content = _settingsPage;
+    private void ShowRustPlusPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_rustPlusPage);
+
+    private void ShowSettingsPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_settingsPage);
+
+    private void SetNavigationVisible(bool visible)
+    {
+        NavigationPanel.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        NavigationColumn.Width = visible ? new GridLength(224) : new GridLength(0);
+    }
+
+    private void NavigateTo(object page)
+    {
+        if (ReferenceEquals(PageHost.Content, page))
+        {
+            return;
+        }
+
+        PageHost.BeginAnimation(UIElement.OpacityProperty, null);
+        PageHost.Opacity = 0;
+        PageHost.Content = page;
+
+        var duration = TimeSpan.FromMilliseconds(180);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        PageHost.BeginAnimation(
+            UIElement.OpacityProperty,
+            new DoubleAnimation(0, 1, duration) { EasingFunction = easing });
+
+        if (PageHost.RenderTransform is not TranslateTransform transform)
+        {
+            transform = new TranslateTransform();
+            PageHost.RenderTransform = transform;
+        }
+
+        transform.BeginAnimation(
+            TranslateTransform.YProperty,
+            new DoubleAnimation(8, 0, duration) { EasingFunction = easing });
+    }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
@@ -142,6 +218,90 @@ public partial class MainWindow : Window
                 or System.Security.Cryptography.CryptographicException)
         {
             _rustPlusPage.ShowError(exception.Message);
+        }
+        finally
+        {
+            _rustPlusPage.RefreshSavedProfile();
+        }
+
+        if (_rustPlusService.SteamId is not null)
+        {
+            CompleteOnboarding();
+            if (ReferenceEquals(PageHost.Content, _welcomePage))
+            {
+                SetNavigationVisible(true);
+                NavigateTo(_alarmPage);
+            }
+        }
+    }
+
+    private async void WelcomePage_ConnectRequested(object? sender, EventArgs e)
+    {
+        CompleteOnboarding();
+        SetNavigationVisible(true);
+        NavigateTo(_rustPlusPage);
+        await _rustPlusPage.BeginConnectionAsync();
+    }
+
+    private void WelcomePage_ContinueWithoutAccountRequested(object? sender, EventArgs e)
+    {
+        CompleteOnboarding();
+        SetNavigationVisible(true);
+        NavigateTo(_alarmPage);
+    }
+
+    private void RustPlusPage_DisconnectCompleted(object? sender, EventArgs e)
+    {
+        _preferences.OnboardingCompleted = false;
+        SavePreferences();
+        SetNavigationVisible(false);
+        NavigateTo(_welcomePage);
+    }
+
+    private void CompleteOnboarding()
+    {
+        if (_preferences.OnboardingCompleted)
+        {
+            return;
+        }
+
+        _preferences.OnboardingCompleted = true;
+        SavePreferences();
+    }
+
+    private AppPreferences LoadPreferences()
+    {
+        try
+        {
+            return _preferencesStore.Load();
+        }
+        catch (Exception exception) when (
+            exception is IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            System.Windows.MessageBox.Show(
+                this,
+                $"Could not load application settings:\n{exception.Message}",
+                "RustToolkit settings",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return new AppPreferences();
+        }
+    }
+
+    private void SavePreferences()
+    {
+        try
+        {
+            _preferencesStore.Save(_preferences);
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            System.Windows.MessageBox.Show(
+                this,
+                $"Could not save application settings:\n{exception.Message}",
+                "RustToolkit settings",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
     }
 
@@ -210,6 +370,45 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SettingsPage_KeepAwakeSettingChanged(bool enabled)
+    {
+        try
+        {
+            _keepAwakeService.SetEnabled(enabled);
+            _preferences.KeepAwakeEnabled = enabled;
+            _preferencesStore.Save(_preferences);
+            _keepAwakeEnabled = enabled;
+        }
+        catch (Exception exception) when (
+            exception is IOException or UnauthorizedAccessException or Win32Exception)
+        {
+            string? rollbackError = null;
+            try
+            {
+                _keepAwakeService.SetEnabled(_keepAwakeEnabled);
+            }
+            catch (Win32Exception rollbackException)
+            {
+                rollbackError = rollbackException.Message;
+            }
+
+            _preferences.KeepAwakeEnabled = _keepAwakeEnabled;
+            _settingsPage.SetKeepAwakeEnabled(_keepAwakeEnabled);
+            var message = $"Could not update the keep-awake setting:\n{exception.Message}";
+            if (rollbackError is not null)
+            {
+                message += $"\n\nCould not restore the previous system state:\n{rollbackError}";
+            }
+
+            System.Windows.MessageBox.Show(
+                this,
+                message,
+                "RustToolkit settings",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
     private static bool IsStartupEnabled()
     {
         using var key = Registry.CurrentUser.OpenSubKey(RunKeyPath, writable: false);
@@ -262,6 +461,20 @@ public partial class MainWindow : Window
         _alarmService.Stop();
         _timerService.Dispose();
         _rustPlusService.Dispose();
+        _craftingDataService.Dispose();
+        try
+        {
+            _keepAwakeService.Dispose();
+        }
+        catch (Win32Exception exception)
+        {
+            System.Windows.MessageBox.Show(
+                this,
+                $"Could not restore the Windows sleep setting:\n{exception.Message}",
+                "RustToolkit",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
         CloseAlarmWindows();
         if (_hotkeyRegistered)
         {

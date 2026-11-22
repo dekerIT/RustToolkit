@@ -14,7 +14,7 @@
 
         <StackPanel>
             <TextBlock Text="Raid Alarm" FontSize="29" FontWeight="Bold" />
-            <TextBlock Text="A local alert you can trigger from the app or the F8 hotkey."
+            <TextBlock Text="Rust+ Smart Alarm notifications trigger this alert. Use Test siren only to check the local sound and alert windows; F8 stops an active alert."
                        Foreground="{StaticResource MutedBrush}"
                        Margin="0,7,0,0" />
         </StackPanel>
@@ -38,7 +38,7 @@
         </Border>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <Button Content="Test Alarm"
+            <Button Content="Test siren"
                     Background="{StaticResource AccentBrush}"
                     Margin="0,0,10,0"
                     Click="TriggerAlarm_Click" />
