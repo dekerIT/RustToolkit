@@ -39,7 +39,7 @@
 
         <StackPanel Grid.Row="4" Orientation="Horizontal">
             <Button Content="Test siren"
-                    Background="{StaticResource AccentBrush}"
+                    Style="{StaticResource PrimaryButtonStyle}"
                     Margin="0,0,10,0"
                     Click="TriggerAlarm_Click" />
             <Button Content="Stop Alarm"

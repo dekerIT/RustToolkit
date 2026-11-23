@@ -22,6 +22,7 @@ public sealed class RustPlusConnectionService : IDisposable
     private readonly object _profileGate = new();
     private RustPlusStoredProfile? _profile;
     private RustPlusFcm? _listener;
+    private volatile bool _listenerConnected;
     private bool _disposed;
 
     public RustPlusConnectionService(RustPlusProfileStore store)
@@ -30,6 +31,7 @@ public sealed class RustPlusConnectionService : IDisposable
     }
 
     public string Status { get; private set; } = "Rust+ is not connected.";
+    public bool IsListenerConnected => _listenerConnected;
 
     public ulong? SteamId
     {
@@ -130,7 +132,7 @@ public sealed class RustPlusConnectionService : IDisposable
                 SaveProfile();
             }
 
-            if (_listener is not null)
+            if (_listenerConnected)
             {
                 SetStatus("Rust+ is already listening for events.");
                 return;
@@ -347,14 +349,21 @@ public sealed class RustPlusConnectionService : IDisposable
         }
     }
 
-    private void Listener_Connected(object? sender, EventArgs e) =>
+    private void Listener_Connected(object? sender, EventArgs e)
+    {
+        _listenerConnected = true;
         SetStatus(GetListeningStatus());
+    }
 
-    private void Listener_Disconnected(object? sender, EventArgs e) =>
-        SetStatus("Rust+ notifications disconnected. Select Connect Rust+ to retry.");
+    private void Listener_Disconnected(object? sender, EventArgs e)
+    {
+        _listenerConnected = false;
+        SetStatus("Rust+ notifications disconnected. Select Reconnect to retry.");
+    }
 
     private void Listener_ErrorOccurred(object? sender, Exception exception)
     {
+        _listenerConnected = false;
         SetStatus("Rust+ notifications stopped.");
         ErrorOccurred?.Invoke($"Rust+ notification connection failed: {exception.Message}");
     }
@@ -547,6 +556,7 @@ public sealed class RustPlusConnectionService : IDisposable
         _listener.OnEntityPairing -= Listener_EntityPairing;
         _listener.Dispose();
         _listener = null;
+        _listenerConnected = false;
     }
 
     private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(_disposed, this);

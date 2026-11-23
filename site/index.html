@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#111511">
+    <meta name="theme-color" content="#0B0B0D">
     <meta
       name="description"
-      content="RustToolkit is a free Windows companion for Rust: Smart Alarm alerts, crafting breakdowns, timers, server maps, smart devices, and personal notes."
+      content="RustToolkit is a free Windows companion for Rust: notes, Smart Alarm alerts, crafting breakdowns, timers, server maps, and paired smart devices."
     >
     <link rel="canonical" href="https://dekerit.github.io/RustToolkit/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="RustToolkit — keep your edge">
     <meta
       property="og:description"
-      content="A practical Windows companion for Rust. Stay on top of alarms, crafting, timers, and your server."
+      content="A practical Windows companion for Rust. Keep notes organized, plan crafts, and stay on top of alarms, timers, and your server."
     >
     <meta property="og:image" content="assets/screenshots/rustplus.png">
     <title>RustToolkit — keep your edge</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
   </head>
@@ -28,10 +28,7 @@
     <header class="site-header">
       <a class="brand" href="#" aria-label="RustToolkit home">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 36 36" fill="none">
-            <path d="M5 8.5 18 3l13 5.5v9.2c0 7.4-5.3 12.1-13 15.3C10.3 29.8 5 25.1 5 17.7V8.5Z" />
-            <path d="M12 23V13h7.1c2.3 0 3.8 1.2 3.8 3.1 0 1.7-1.2 2.8-3 3.1l4.3 3.8h-4.8l-3.7-3.5h-.2V23H12Zm3.5-6.1h3.2c.6 0 .9-.3.9-.8s-.3-.8-.9-.8h-3.2v1.6Z" />
-          </svg>
+          <img src="favicon.ico" alt="">
         </span>
         <span class="brand-name">RUST<span>TOOLKIT</span></span>
       </a>
@@ -83,7 +80,7 @@
         </div>
 
         <div class="hero-visual" aria-label="Preview of the RustToolkit crafting calculator">
-          <div class="visual-coordinate">OUTPOST // DESKTOP BUILD 0.2.1</div>
+          <div class="visual-coordinate">OUTPOST // DESKTOP BUILD 0.2.3</div>
           <div class="visual-frame">
             <div class="frame-bar">
               <span class="frame-lights" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -107,10 +104,10 @@
         <div class="ticker-track" aria-hidden="true">
           <span>SMART ALARM</span><i>✳</i><span>CRAFTING MATH</span><i>✳</i>
           <span>WIPE TIMERS</span><i>✳</i><span>SERVER MAP</span><i>✳</i>
-          <span>PERSONAL NOTES</span><i>✳</i><span>SMART DEVICES</span><i>✳</i>
+          <span>KEEP AWAKE</span><i>✳</i><span>RUST NOTES</span><i>✳</i><span>SMART DEVICES</span><i>✳</i>
           <span>SMART ALARM</span><i>✳</i><span>CRAFTING MATH</span><i>✳</i>
           <span>WIPE TIMERS</span><i>✳</i><span>SERVER MAP</span><i>✳</i>
-          <span>PERSONAL NOTES</span><i>✳</i><span>SMART DEVICES</span><i>✳</i>
+          <span>KEEP AWAKE</span><i>✳</i><span>RUST NOTES</span><i>✳</i><span>SMART DEVICES</span><i>✳</i>
         </div>
       </div>
 
@@ -171,17 +168,16 @@
           </article>
 
           <article class="feature-card">
-            <div class="card-topline"><span>04</span><span>YOUR SETUP</span></div>
-            <div class="feature-icon icon-notes" aria-hidden="true">
+            <div class="card-topline"><span>04</span><span>YOUR DESKTOP</span></div>
+            <div class="feature-icon icon-settings" aria-hidden="true">
               <svg viewBox="0 0 40 40" fill="none">
-                <path d="M11 6h13l7 7v21H11V6Z" />
-                <path d="M24 6v8h7M16 21h10m-10 5h10" />
-                <path d="m23 32 8-8 3 3-8 8-4 1 1-4Z" />
+                <path d="M8 13h24v20H8zM13 8h14M13 18h14M13 23h9" />
+                <path d="M12 33v3m16-3v3" />
               </svg>
             </div>
-            <h3>Keep your wipe notes close.</h3>
-            <p>Open your notes app with RustToolkit and keep your own setup in one place.</p>
-            <div class="card-foot"><span>YOUR FILES, YOUR PC</span><span>↗</span></div>
+            <h3>Make the PC stay ready.</h3>
+            <p>Keep RustToolkit in the tray, start it with Windows, and prevent system sleep when you choose.</p>
+            <div class="card-foot"><span>OPTIONAL LOCAL CONTROLS</span><span>↗</span></div>
           </article>
 
           <article class="feature-card feature-card-wide">
@@ -198,6 +194,18 @@
               a Smart Switch. Sign out whenever you want.
             </p>
             <div class="card-foot"><span>OPTIONAL STEAM SIGN-IN</span><span>↗</span></div>
+          </article>
+
+          <article class="feature-card">
+            <div class="card-topline"><span>06</span><span>YOUR RUST NOTES</span></div>
+            <div class="feature-icon icon-notes" aria-hidden="true">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M11 5h13l7 7v23H11zM24 5v8h7M16 20h10m-10 5h10m-10 5h7" />
+              </svg>
+            </div>
+            <h3>Keep your notes in order.</h3>
+            <p>Write Rust notes and group them into folders in the companion Notes window.</p>
+            <div class="card-foot"><span>LOCAL NOTES</span><span>↗</span></div>
           </article>
         </div>
       </section>
@@ -287,11 +295,7 @@
             </a>
           </div>
           <div class="download-mark" aria-hidden="true">
-            <span>RTK</span>
-            <svg viewBox="0 0 160 160" fill="none">
-              <path d="M19 38 80 13l61 25v43c0 34-25 56-61 71-36-15-61-37-61-71V38Z" />
-              <path d="M50 107V54h37c13 0 22 7 22 17 0 9-7 15-17 17l24 19H91L70 88h-2v19H50Zm18-33h17c3 0 5-1 5-4s-2-4-5-4H68v8Z" />
-            </svg>
+            <img class="download-mark-icon" src="favicon.ico" alt="">
             <span>DESKTOP FIELD KIT // EST. 2026</span>
           </div>
         </div>
@@ -305,10 +309,7 @@
     <footer class="site-footer shell">
       <a class="brand brand-footer" href="#" aria-label="RustToolkit home">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 36 36" fill="none">
-            <path d="M5 8.5 18 3l13 5.5v9.2c0 7.4-5.3 12.1-13 15.3C10.3 29.8 5 25.1 5 17.7V8.5Z" />
-            <path d="M12 23V13h7.1c2.3 0 3.8 1.2 3.8 3.1 0 1.7-1.2 2.8-3 3.1l4.3 3.8h-4.8l-3.7-3.5h-.2V23H12Zm3.5-6.1h3.2c.6 0 .9-.3.9-.8s-.3-.8-.9-.8h-3.2v1.6Z" />
-          </svg>
+          <img src="favicon.ico" alt="">
         </span>
         <span class="brand-name">RUST<span>TOOLKIT</span></span>
       </a>

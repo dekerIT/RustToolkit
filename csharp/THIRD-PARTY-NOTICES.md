@@ -35,5 +35,3 @@ SOFTWARE.
 ```
 
 Current transitive dependencies include `Microsoft.Extensions.DependencyInjection.Abstractions` and `Microsoft.Extensions.Logging.Abstractions` (MIT, Microsoft), plus `protobuf-net` and `protobuf-net.Core` (Apache-2.0, Marc Gravell). Their package metadata and license texts are available from [NuGet](https://www.nuget.org/) and the respective [Microsoft](https://github.com/dotnet/dotnet) and [protobuf-net](https://github.com/protobuf-net/protobuf-net) repositories. Include their license texts with any binary release that redistributes these dependencies.
-
-The user-provided `notes.exe` is copied from the repository root into the desktop app's `notes/` output folder and launched at startup. It is not a NuGet dependency. Its source, license, and redistribution terms have not been independently reviewed; confirm these before publishing a release.

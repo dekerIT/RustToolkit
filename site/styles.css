@@ -1,16 +1,16 @@
 :root {
   color-scheme: dark;
-  --ink: #e8e7dd;
-  --muted: #9c9b8e;
-  --dim: #696b61;
-  --bg: #111511;
-  --panel: #181d18;
-  --panel-lift: #20271f;
-  --line: #343a30;
-  --line-bright: #4a503f;
-  --acid: #d3ef75;
-  --acid-dark: #9eae54;
-  --rust: #d87242;
+  --ink: #F4F4F4;
+  --muted: #A1A1A1;
+  --dim: #717171;
+  --bg: #0B0B0B;
+  --panel: #151515;
+  --panel-lift: #202020;
+  --line: #303030;
+  --line-bright: #454545;
+  --accent: #F4F4F4;
+  --muted-accent: #A1A1A1;
+  --rust: #A1A1A1;
   --mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --max: 1180px;
@@ -30,7 +30,7 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(ellipse at 75% 4%, rgb(91 106 54 / 10%), transparent 34rem),
+    radial-gradient(ellipse at 75% 4%, rgb(100 100 100 / 10%), transparent 34rem),
     var(--bg);
   font-family: var(--sans);
   font-size: 15px;
@@ -60,7 +60,7 @@ a {
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--acid);
+  outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -82,7 +82,7 @@ img {
   padding: 10px 14px;
   transform: translateY(-160%);
   color: var(--bg);
-  background: var(--acid);
+  background: var(--accent);
 }
 
 .skip-link:focus {
@@ -100,8 +100,8 @@ img {
   justify-content: space-between;
   margin-inline: auto;
   padding-inline: max(32px, calc((100% - var(--max)) / 2));
-  border-bottom: 1px solid rgb(75 82 66 / 44%);
-  background: rgb(17 21 17 / 88%);
+  border-bottom: 1px solid rgb(80 80 80 / 44%);
+  background: rgb(20 20 20 / 88%);
   backdrop-filter: blur(18px);
 }
 
@@ -116,15 +116,14 @@ img {
   width: 35px;
   height: 35px;
   place-items: center;
-  color: var(--acid);
+  color: var(--accent);
 }
 
-.brand-mark svg {
+.brand-mark img {
+  display: block;
   width: 100%;
-  fill: none;
-  stroke: currentColor;
-  stroke-linejoin: round;
-  stroke-width: 1.4;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-name {
@@ -142,7 +141,7 @@ img {
   display: flex;
   align-items: center;
   gap: clamp(20px, 3.2vw, 46px);
-  color: #b7b7aa;
+  color: #B6B6B6;
   font-size: 13px;
 }
 
@@ -153,7 +152,7 @@ img {
 .primary-nav > a:not(.nav-download):hover,
 .text-link:hover,
 .footer-github:hover {
-  color: var(--acid);
+  color: var(--accent);
 }
 
 .nav-download {
@@ -167,9 +166,9 @@ img {
 }
 
 .nav-download:hover {
-  border-color: var(--acid);
+  border-color: var(--accent);
   color: var(--bg);
-  background: var(--acid);
+  background: var(--accent);
 }
 
 .nav-download span {
@@ -201,7 +200,7 @@ img {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: var(--acid-dark);
+  color: var(--muted-accent);
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 600;
@@ -214,14 +213,14 @@ img {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--acid);
-  box-shadow: 0 0 11px rgb(211 239 117 / 55%);
+  background: var(--accent);
+  box-shadow: 0 0 11px rgb(227 227 227 / 55%);
 }
 
 .live-dot::after {
   position: absolute;
   inset: -4px;
-  border: 1px solid rgb(211 239 117 / 35%);
+  border: 1px solid rgb(227 227 227 / 35%);
   border-radius: inherit;
   animation: pulse 2.4s ease-out infinite;
   content: "";
@@ -250,13 +249,13 @@ h1 {
 
 h1 span,
 h2 span {
-  color: var(--acid);
+  color: var(--accent);
 }
 
 .hero-lede {
   max-width: 425px;
   margin: 23px 0 28px;
-  color: #b3b3a7;
+  color: #B2B2B2;
   font-size: 16px;
   line-height: 1.75;
 }
@@ -287,14 +286,14 @@ h2 span {
 }
 
 .button-primary {
-  color: #161a12;
-  background: var(--acid);
-  box-shadow: 0 7px 25px rgb(211 239 117 / 12%);
+  color: #191919;
+  background: var(--accent);
+  box-shadow: 0 7px 25px rgb(227 227 227 / 12%);
 }
 
 .button-primary:hover {
-  background: #e1f895;
-  box-shadow: 0 10px 32px rgb(211 239 117 / 20%);
+  background: #EEEEEE;
+  box-shadow: 0 10px 32px rgb(227 227 227 / 20%);
 }
 
 .button svg {
@@ -307,7 +306,7 @@ h2 span {
 }
 
 .text-link {
-  color: #c2c2b6;
+  color: #C1C1C1;
   font-family: var(--mono);
   font-size: 11px;
   transition: color 160ms ease;
@@ -315,7 +314,7 @@ h2 span {
 
 .text-link span {
   padding-left: 5px;
-  color: var(--acid);
+  color: var(--accent);
 }
 
 .hero-facts {
@@ -352,7 +351,7 @@ h2 span {
   z-index: 2;
   top: 10px;
   left: 12px;
-  color: #747a67;
+  color: #777777;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.1em;
@@ -362,15 +361,15 @@ h2 span {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  border: 1px solid #525b45;
-  background: #151915;
-  box-shadow: 0 28px 80px rgb(0 0 0 / 46%), 0 0 60px rgb(150 177 72 / 8%);
+  border: 1px solid #585858;
+  background: #181818;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 46%), 0 0 60px rgb(167 167 167 / 8%);
   transform: perspective(1300px) rotateY(-5deg) rotateX(1deg);
   transition: transform 400ms ease, box-shadow 400ms ease;
 }
 
 .visual-frame:hover {
-  box-shadow: 0 32px 95px rgb(0 0 0 / 54%), 0 0 70px rgb(150 177 72 / 13%);
+  box-shadow: 0 32px 95px rgb(0 0 0 / 54%), 0 0 70px rgb(167 167 167 / 13%);
   transform: perspective(1300px) rotateY(0) rotateX(0) translateY(-3px);
 }
 
@@ -380,8 +379,8 @@ h2 span {
   align-items: center;
   justify-content: space-between;
   padding: 0 11px;
-  border-bottom: 1px solid #42483a;
-  color: #898d7f;
+  border-bottom: 1px solid #464646;
+  color: #8B8B8B;
   font-family: var(--mono);
   font-size: 8px;
   letter-spacing: 0.08em;
@@ -396,7 +395,7 @@ h2 span {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #62685a;
+  background: #666666;
 }
 
 .frame-lights i:first-child {
@@ -407,14 +406,14 @@ h2 span {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--acid-dark);
+  color: var(--muted-accent);
 }
 
 .frame-state i {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--acid);
+  background: var(--accent);
 }
 
 .visual-frame img {
@@ -432,15 +431,15 @@ h2 span {
   gap: 8px;
   padding: 8px 10px;
   border: 1px solid var(--line-bright);
-  color: #b5b8a7;
-  background: #171d17;
+  color: #B6B6B6;
+  background: #1B1B1B;
   font-family: var(--mono);
   font-size: 8px;
   letter-spacing: 0.07em;
 }
 
 .visual-note span {
-  color: var(--acid);
+  color: var(--accent);
 }
 
 .note-top {
@@ -456,11 +455,11 @@ h2 span {
 .visual-grid {
   position: absolute;
   z-index: 0;
-  inset: 0 -12% -3% 12%;
+  inset: 0 0 -3% 12%;
   opacity: 0.22;
   background-image:
-    linear-gradient(rgb(140 153 113 / 19%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(140 153 113 / 19%) 1px, transparent 1px);
+    linear-gradient(rgb(148 148 148 / 19%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 148 148 / 19%) 1px, transparent 1px);
   background-size: 33px 33px;
   mask-image: linear-gradient(120deg, transparent 15%, black 70%, transparent);
 }
@@ -474,8 +473,8 @@ h2 span {
   width: 70px;
   height: 70px;
   align-content: center;
-  border: 1px solid rgb(211 239 117 / 55%);
-  color: var(--acid);
+  border: 1px solid rgb(227 227 227 / 55%);
+  color: var(--accent);
   background: var(--bg);
   font-family: var(--mono);
   font-size: 8px;
@@ -491,8 +490,8 @@ h2 span {
 
 .ticker {
   overflow: hidden;
-  border-block: 1px solid #343a30;
-  background: #171c16;
+  border-block: 1px solid #383838;
+  background: #1B1B1B;
 }
 
 .ticker-track {
@@ -502,14 +501,14 @@ h2 span {
   gap: 34px;
   padding: 13px 0;
   animation: ticker-scroll 42s linear infinite;
-  color: #96998a;
+  color: #979797;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.14em;
 }
 
 .ticker-track i {
-  color: var(--acid-dark);
+  color: var(--muted-accent);
   font-size: 12px;
   font-style: normal;
 }
@@ -555,7 +554,7 @@ h2 span {
   overflow: hidden;
   padding: 21px;
   border: 1px solid var(--line);
-  background: linear-gradient(145deg, #1a2019, #161b16 75%);
+  background: linear-gradient(145deg, #1E1E1E, #1A1A1A 75%);
   transition: border-color 200ms ease, transform 200ms ease, background 200ms ease;
 }
 
@@ -583,8 +582,8 @@ h2 span {
 }
 
 .feature-card:hover {
-  border-color: #68744e;
-  background: linear-gradient(145deg, #20271e, #171d17 75%);
+  border-color: #6F6F6F;
+  background: linear-gradient(145deg, #252525, #1B1B1B 75%);
   transform: translateY(-3px);
 }
 
@@ -593,8 +592,8 @@ h2 span {
   min-height: 542px;
   padding: 24px;
   background:
-    radial-gradient(ellipse at 70% 33%, rgb(211 239 117 / 8%), transparent 15rem),
-    linear-gradient(145deg, #1d241b, #151a15 75%);
+    radial-gradient(ellipse at 70% 33%, rgb(227 227 227 / 8%), transparent 15rem),
+    linear-gradient(145deg, #222222, #191919 75%);
 }
 
 .feature-card-craft {
@@ -613,14 +612,14 @@ h2 span {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #777e6b;
+  color: #7B7B7B;
   font-family: var(--mono);
   font-size: 8px;
   letter-spacing: 0.08em;
 }
 
 .card-topline span:first-child {
-  color: var(--acid-dark);
+  color: var(--muted-accent);
 }
 
 .feature-icon {
@@ -629,9 +628,9 @@ h2 span {
   height: 48px;
   place-items: center;
   margin-top: 28px;
-  border: 1px solid #434c39;
-  background: #20271e;
-  color: var(--acid);
+  border: 1px solid #494949;
+  background: #252525;
+  color: var(--accent);
 }
 
 .feature-icon svg {
@@ -648,13 +647,13 @@ h2 span {
   width: 64px;
   height: 64px;
   margin-top: 51px;
-  border-color: #566144;
+  border-color: #5D5D5D;
 }
 
 .icon-alarm::after {
   position: absolute;
   inset: -8px;
-  border: 1px solid rgb(211 239 117 / 20%);
+  border: 1px solid rgb(227 227 227 / 20%);
   content: "";
   animation: pulse 2.8s ease-out infinite;
 }
@@ -673,7 +672,7 @@ h2 span {
 .feature-card p {
   max-width: 400px;
   margin-bottom: 30px;
-  color: #9c9f91;
+  color: #9D9D9D;
   font-size: 12px;
   line-height: 1.75;
 }
@@ -693,11 +692,11 @@ h2 span {
   width: 100%;
   margin-top: auto;
   padding-top: 14px;
-  border-top: 1px solid #333a2f;
+  border-top: 1px solid #383838;
 }
 
 .card-foot span:last-child {
-  color: var(--acid);
+  color: var(--accent);
   font-size: 12px;
 }
 
@@ -709,10 +708,10 @@ h2 span {
   gap: 13px;
   margin-top: 20px;
   padding-inline: 8px;
-  border: 1px solid #323a30;
+  border: 1px solid #383838;
   background:
-    linear-gradient(90deg, transparent 24px, rgb(115 126 94 / 8%) 25px, transparent 26px),
-    #151a15;
+    linear-gradient(90deg, transparent 24px, rgb(122 122 122 / 8%) 25px, transparent 26px),
+    #191919;
   background-size: 26px 26px;
 }
 
@@ -722,9 +721,9 @@ h2 span {
   width: 38px;
   height: 38px;
   place-items: center;
-  border: 1px solid #4a503d;
-  color: var(--acid);
-  background: #20271d;
+  border: 1px solid #4E4E4E;
+  color: var(--accent);
+  background: #252525;
   font-family: var(--mono);
   font-size: 16px;
   font-weight: 700;
@@ -739,7 +738,7 @@ h2 span {
 .recipe-connect {
   width: 37px;
   height: 1px;
-  background: var(--acid-dark);
+  background: var(--muted-accent);
 }
 
 .recipe-stack {
@@ -750,14 +749,14 @@ h2 span {
 .recipe-stack i {
   width: 18px;
   height: 28px;
-  background: #30281e;
+  background: #292929;
 }
 
 .recipe-label,
 .recipe-result {
   position: absolute;
   bottom: 4px;
-  color: #818577;
+  color: #838383;
   font-family: var(--mono);
   font-size: 7px;
   letter-spacing: 0.06em;
@@ -769,7 +768,7 @@ h2 span {
 
 .recipe-result {
   right: 8px;
-  color: var(--acid-dark);
+  color: var(--muted-accent);
 }
 
 .feature-card-craft .mini-recipe + h3 {
@@ -782,10 +781,10 @@ h2 span {
 
 .screens-section {
   padding-block: 110px 120px;
-  border-block: 1px solid #2e352c;
+  border-block: 1px solid #333333;
   background:
-    radial-gradient(ellipse at 90% 50%, rgb(114 131 72 / 8%), transparent 35rem),
-    #151a15;
+    radial-gradient(ellipse at 90% 50%, rgb(124 124 124 / 8%), transparent 35rem),
+    #191919;
 }
 
 .screens-heading {
@@ -802,8 +801,8 @@ h2 span {
 .screen-shot {
   overflow: hidden;
   margin: 0;
-  border: 1px solid #414a39;
-  background: #111511;
+  border: 1px solid #474747;
+  background: #141414;
 }
 
 .screen-shot-main {
@@ -813,12 +812,12 @@ h2 span {
 .shot-label {
   min-height: 34px;
   padding-inline: 12px;
-  border-bottom: 1px solid #343b30;
-  background: #191f18;
+  border-bottom: 1px solid #393939;
+  background: #1D1D1D;
 }
 
 .shot-label span:first-child {
-  color: var(--acid-dark);
+  color: var(--muted-accent);
 }
 
 .screen-shot img {
@@ -835,8 +834,8 @@ h2 span {
 
 .screen-shot figcaption {
   padding: 11px 13px 13px;
-  border-top: 1px solid #343b30;
-  color: #a4a799;
+  border-top: 1px solid #393939;
+  color: #A5A5A5;
   font-size: 11px;
 }
 
@@ -875,7 +874,7 @@ h2 span {
 
 .step-number {
   padding-top: 3px;
-  color: var(--acid-dark);
+  color: var(--muted-accent);
   font-family: var(--mono);
   font-size: 10px;
 }
@@ -905,16 +904,16 @@ h2 span {
   align-items: center;
   overflow: hidden;
   padding: clamp(28px, 5vw, 62px);
-  border: 1px solid #4a543d;
+  border: 1px solid #515151;
   background:
-    radial-gradient(ellipse at 85% 50%, rgb(145 169 79 / 14%), transparent 23rem),
-    linear-gradient(110deg, #1b2219 0%, #171d16 60%, #20271b 100%);
+    radial-gradient(ellipse at 85% 50%, rgb(160 160 160 / 14%), transparent 23rem),
+    linear-gradient(110deg, #202020 0%, #1B1B1B 60%, #252525 100%);
 }
 
 .download-card::before {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(90deg, rgb(181 194 147 / 6%) 1px, transparent 1px);
+  background-image: linear-gradient(90deg, rgb(188 188 188 / 6%) 1px, transparent 1px);
   background-size: 52px 100%;
   content: "";
   pointer-events: none;
@@ -931,7 +930,7 @@ h2 span {
 }
 
 .download-text h2 span {
-  color: #b8c298;
+  color: #BDBDBD;
 }
 
 .download-text > p {
@@ -947,13 +946,13 @@ h2 span {
   aspect-ratio: 1;
   place-items: center;
   justify-self: end;
-  color: rgb(211 239 117 / 75%);
+  color: rgb(227 227 227 / 75%);
 }
 
 .download-mark::before,
 .download-mark::after {
   position: absolute;
-  border: 1px solid rgb(211 239 117 / 20%);
+  border: 1px solid rgb(227 227 227 / 20%);
   border-radius: 50%;
   content: "";
 }
@@ -969,19 +968,17 @@ h2 span {
   animation: orbit 38s linear infinite reverse;
 }
 
-.download-mark svg {
+.download-mark-icon {
   width: 65%;
-  fill: none;
-  stroke: currentColor;
-  stroke-linejoin: round;
-  stroke-width: 1.1;
-  filter: drop-shadow(0 0 18px rgb(211 239 117 / 16%));
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgb(227 227 227 / 16%));
 }
 
 .download-mark > span:first-child {
   position: absolute;
   z-index: 1;
-  color: #171d14;
+  color: #1B1B1B;
   font-family: var(--mono);
   font-size: 15px;
   font-weight: 800;
@@ -992,7 +989,7 @@ h2 span {
 .download-mark > span:last-child {
   position: absolute;
   bottom: 0;
-  color: #87916a;
+  color: #8D8D8D;
   font-family: var(--mono);
   font-size: 7px;
   letter-spacing: 0.14em;
@@ -1001,18 +998,18 @@ h2 span {
 
 .release-footnote {
   margin: 13px 0 0;
-  color: #777d6e;
+  color: #7B7B7B;
   font-size: 10px;
   text-align: right;
 }
 
 .release-footnote a {
   margin-left: 5px;
-  color: #b4c078;
+  color: #B9B9B9;
 }
 
 .release-footnote a:hover {
-  color: var(--acid);
+  color: var(--accent);
 }
 
 .site-footer {
@@ -1021,7 +1018,7 @@ h2 span {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  border-top: 1px solid #30372d;
+  border-top: 1px solid #353535;
 }
 
 .brand-footer .brand-mark {
@@ -1035,12 +1032,12 @@ h2 span {
 
 .site-footer p {
   margin: 0;
-  color: #777d70;
+  color: #7B7B7B;
   font-size: 10px;
 }
 
 .footer-github {
-  color: #a5ad8a;
+  color: #A9A9A9;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.06em;
@@ -1176,7 +1173,7 @@ h2 span {
     gap: 0;
     padding: 8px 18px 16px;
     border-bottom: 1px solid var(--line);
-    background: #151a15;
+    background: #191919;
     opacity: 0;
     pointer-events: none;
     transform: translateY(-8px);
@@ -1194,7 +1191,7 @@ h2 span {
 
   .primary-nav > a:not(.nav-download) {
     padding: 12px 0;
-    border-bottom: 1px solid #2b3128;
+    border-bottom: 1px solid #2F2F2F;
   }
 
   .nav-download {
@@ -1254,10 +1251,6 @@ h2 span {
 
   .note-top {
     top: 14%;
-    right: 0;
-  }
-
-  .visual-grid {
     right: 0;
   }
 

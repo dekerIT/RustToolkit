@@ -12,13 +12,13 @@
             <StackPanel>
                 <CheckBox x:Name="StartupCheckBox"
                           Content="Start RustToolkit with Windows"
-                          Foreground="#F4F6F8"
+                          Foreground="{StaticResource TextPrimaryBrush}"
                           FontSize="14"
                           Checked="StartupCheckBox_Changed"
                           Unchecked="StartupCheckBox_Changed" />
                 <CheckBox x:Name="KeepAwakeCheckBox"
                           Content="Keep the PC awake while RustToolkit is running"
-                          Foreground="#F4F6F8"
+                          Foreground="{StaticResource TextPrimaryBrush}"
                           FontSize="14"
                           Margin="0,14,0,0"
                           Checked="KeepAwakeCheckBox_Changed"

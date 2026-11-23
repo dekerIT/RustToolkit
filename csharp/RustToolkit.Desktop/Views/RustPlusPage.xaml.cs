@@ -44,6 +44,7 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
     private async Task RunConnectionAsync(bool restore)
     {
         ConnectButton.IsEnabled = false;
+        ReconnectButton.IsEnabled = false;
         ErrorText.Visibility = Visibility.Collapsed;
         try
         {
@@ -71,6 +72,7 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
         finally
         {
             ConnectButton.IsEnabled = true;
+            ReconnectButton.IsEnabled = _service.SteamId is not null;
             RefreshSavedProfile();
         }
     }

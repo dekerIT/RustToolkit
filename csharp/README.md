@@ -8,6 +8,7 @@ This is the Windows desktop application, built with WPF on .NET 10.
 - F8 hotkey, tray menu, and minimize-to-tray behavior
 - Named countdown timers persisted under `%LOCALAPPDATA%\RustToolkit`
 - Timer notifications at 10 minutes, 3 minutes, and completion
+- Companion Rust notes app launched with the toolkit; notes are organized into folders
 - Optional Windows startup registration
 - Optional keep-awake mode that prevents system sleep while RustToolkit is running
 - Crafting calculator with recipe search, item icons, batch-aware recursive ingredient breakdown, workbench requirements, and persistent favorites
@@ -27,7 +28,7 @@ dotnet build csharp\RustToolkit.sln
 dotnet run --project csharp\RustToolkit.Desktop\RustToolkit.Desktop.csproj
 ```
 
-On first launch, choose **Connect Steam / Rust+** to start setup or **I'll sign in later — continue** to use local tools without an account. Rust+ setup can also be started later from its sidebar page. Steam sign-in opens a browser; the connected Steam ID and next pairing step are shown in the app. **Disconnect** removes the saved Rust+ account and paired server/device tokens from this PC, then returns to the welcome screen. Pair a server and Smart Alarm/devices through Rust+, then select a server and click **Load Map**. Map and device state refresh only when requested. The Raid Alarm's **Test siren** button checks only the local siren; real alerts arrive through Rust+ Smart Alarm notifications.
+On first launch, choose **Connect Steam / Rust+** to start setup or **I'll sign in later — continue** to use local tools without an account. The separate Notes window opens automatically; its app is bundled with RustToolkit, and its working data is kept under `%LOCALAPPDATA%\RustToolkit\Notes`. Rust+ setup can also be started later from its sidebar page. Steam sign-in opens a browser; the connected Steam ID and next pairing step are shown in the app. **Disconnect** removes the saved Rust+ account and paired server/device tokens from this PC, then returns to the welcome screen. Pair a server and Smart Alarm/devices through Rust+, then select a server and click **Load Map**. Map and device state refresh only when requested. The Raid Alarm's **Test siren** button checks only the local siren; real alerts arrive through Rust+ Smart Alarm notifications.
 
 ## Data sources and limitations
 
@@ -35,15 +36,13 @@ Crafting recipes and item PNGs are fetched from the unofficial [Rust Items API](
 
 Map and device data refresh only when requested. Smart-device automation, continuous map refresh, and a separate raid-cost calculator backed only by verified data are not implemented yet.
 
-The app copies the root-level `notes.exe` into `notes\notes.exe` beside the desktop app and launches it at startup. The notes app's working directory is `%LOCALAPPDATA%\RustToolkit\Notes`, so files it stores relative to its working directory remain outside the build folder. If `notes.exe` is missing or fails to start, RustToolkit shows a warning and continues. Confirm the notes app's source and redistribution terms before publishing a release; see [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md).
-
 ## Planned work
 
 - Validate sign-in, disconnect, Smart Alarm notifications, server pairing, map loading, and device controls with a real Rust+ account/server.
 - Improve Rust+ reconnect behavior and add clearer map marker controls or optional refresh.
 - Add user-configurable smart-device automations and first-use pairing guidance.
 - Add a separate raid-cost calculator only after every value has a verified source.
-- Verify the notes app and its storage behavior, then prepare a tested Windows release.
+- Prepare and test a distributable Windows release.
 
 ## Third-party packages
 

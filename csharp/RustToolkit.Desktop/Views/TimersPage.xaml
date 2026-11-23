@@ -38,14 +38,14 @@
                          ToolTip="Duration in minutes" />
                 <Button Grid.Column="2"
                         Content="Add Timer"
-                        Background="{StaticResource AccentBrush}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Click="AddTimer_Click" />
             </Grid>
         </Border>
 
         <TextBlock x:Name="ErrorText"
                    Grid.Row="4"
-                   Foreground="#F08A78"
+                   Foreground="{StaticResource ErrorBrush}"
                    Visibility="Collapsed" />
 
         <ScrollViewer Grid.Row="5" VerticalScrollBarVisibility="Auto">

@@ -1,123 +1,106 @@
 <div align="center">
 
-# RustToolkit
+# RUSTTOOLKIT
 
-**Windows desktop companion app for Rust, built with WPF and .NET 10.**
+### A focused desktop companion for Rust.
 
-[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)](#quick-start)
-[![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](#quick-start)
-[![Status](https://img.shields.io/badge/status-in%20development-orange)](#roadmap)
+Crafting plans, Rust+ alerts, server maps, timers, and practical Windows controls — in one native app.
+
+[**Explore the website**](https://dekerit.github.io/RustToolkit/) ·
+[**Download the latest release**](https://github.com/dekerIT/RustToolkit/releases/latest) ·
+[View source](https://github.com/dekerIT/RustToolkit)
+
+<br>
+
+[![Windows 10 and 11](https://img.shields.io/badge/WINDOWS-10%20%2F%2011-F4F4F5?style=flat-square&labelColor=151517)](#download)
+[![.NET 10](https://img.shields.io/badge/.NET-10-F4F4F5?style=flat-square&labelColor=151517)](#build-from-source)
+[![Latest release](https://img.shields.io/github/v/release/dekerIT/RustToolkit?style=flat-square&labelColor=151517&color=F4F4F5)](https://github.com/dekerIT/RustToolkit/releases/latest)
 
 </div>
 
-RustToolkit is an independent fan-made Rust companion. The current application is the C# desktop app in [`csharp/`](./csharp/). Rust+ sign-in and pairing use Steam and Facepunch services; saved Rust+ credentials are encrypted for the current Windows user with DPAPI.
+---
 
-## Interface
+RustToolkit is an independent Windows application for players who want useful Rust tools close at hand. Local features work without Steam sign-in; connect to Rust+ only for live notifications, paired servers, maps, and devices.
+
+## At a glance
+
+| Local tools — no account needed | Rust+ tools — sign in and pair in-game |
+| --- | --- |
+| Crafting calculator with recipe icons and favorites | Smart Alarm notifications and full-screen alerts |
+| Saved countdown timers and Rust notes organized in folders | Paired server map and markers |
+| Siren test, Windows startup, and keep-awake option | Smart-device status and Smart Switch controls |
 
 <p align="center">
-  <img src="assets/screenshots/raid-alarm.png" width="49%" alt="RustToolkit raid alarm screen">
-  <img src="assets/screenshots/timers.png" width="49%" alt="RustToolkit timers screen">
+  <img src="assets/screenshots/crafting.png" width="88%" alt="RustToolkit crafting calculator">
 </p>
 <p align="center">
-  <img src="assets/screenshots/rustplus.png" width="49%" alt="RustToolkit Rust+ connection screen">
-  <img src="assets/screenshots/settings.png" width="49%" alt="RustToolkit startup and keep-awake settings">
+  <img src="assets/screenshots/raid-alarm.png" width="49%" alt="RustToolkit raid alarm">
+  <img src="assets/screenshots/timers.png" width="49%" alt="RustToolkit countdown timers">
 </p>
 <p align="center">
-  <img src="assets/screenshots/crafting.png" width="75%" alt="RustToolkit crafting calculator with item favorites and a material breakdown">
+  <img src="assets/screenshots/rustplus.png" width="49%" alt="RustToolkit Rust+ connection and server map">
+  <img src="assets/screenshots/settings.png" width="49%" alt="RustToolkit Windows startup and keep-awake settings">
 </p>
-
-## Features
-
-- **Raid alarm:** Rust+ Smart Alarm notifications trigger a looping siren and full-screen alert; use the clearly labelled local test to check the siren, and acknowledge real alerts with F8, the alert, or the tray.
-- **Timers:** named countdowns saved locally and restored after restarting.
-- **System tray:** keep RustToolkit running in the background; optionally start with Windows.
-- **Keep awake:** optionally prevent Windows from putting the PC to sleep while RustToolkit is running.
-- **Crafting calculator:** search recipe items with PNG icons, account for craft batches and nested ingredients, and save favorites.
-- **Optional Steam sign-in:** local tools work without an account; connect to Rust+ for real alarms, server maps, and paired devices.
-- **Rust+:** Steam pairing, Rust+ smart-alarm notifications, and server/device pairing events.
-- **Server map:** load a paired server's map on demand with monuments, players, and event markers.
-- **Smart devices:** read smart-device and storage-monitor state; manually set paired Smart Switches.
-- **Local data:** Rust+ profile and pairing credentials are protected using Windows DPAPI for the current user.
 
 ## Download
 
-For a guided per-user install, download `RustToolkit-Setup-vX.Y.Z.exe` from the [latest release](https://github.com/dekerIT/RustToolkit/releases/latest). The portable ZIP is also available for users who prefer to unpack and run the app themselves.
+Choose the setup experience or a portable archive from the [latest GitHub release](https://github.com/dekerIT/RustToolkit/releases/latest):
 
-## Getting started
+- **Installer — `RustToolkit-Setup-vX.Y.Z.exe`:** per-user setup, Start Menu shortcut, optional desktop shortcut, and uninstall support.
+- **Portable — `RustToolkit-vX.Y.Z-win-x64.zip`:** extract the archive and run `RustToolkit.Desktop.exe`. Keep the extracted files together.
 
-On first launch, choose **Connect Steam / Rust+** or **I'll sign in later — continue**. The siren test, timers, crafting calculator, and settings are available without signing in. To use Rust+, sign in, pair a server and its Smart Alarm/devices in the Rust+ game, then select that server in RustToolkit. A Steam sign-in alone does not pair a server.
+## Get started
 
-To disconnect, open **Rust+** and click **Disconnect**. RustToolkit asks for confirmation, removes the locally saved Rust+ profile and paired server/device tokens, then returns to the welcome screen. You can connect again later.
+1. Install RustToolkit and launch it.
+2. Choose **I'll sign in later — continue** to explore the local tools, or connect Steam / Rust+.
+3. For Rust+ features, sign in and pair a server and its Smart Alarm or smart devices in Rust+ in-game.
+4. Open **Rust+** in the app and select a paired server. Load the map or request a device's current state.
 
-## Quick start
+Steam sign-in alone does not pair a server. Disconnect from the **Rust+** page to remove the locally saved account and pairing data.
 
-Install the **.NET 10 SDK**, open PowerShell in the repository folder, and run:
+## What it does
+
+- **Crafting:** search Rust items, choose an amount, and see craft batches, nested ingredients, workbench requirements, base-material totals, and favorites.
+- **Raid Alarm:** real Smart Alarm events can play a looping siren and show a full-screen alert on connected monitors. **Test siren** only tests the local sound; press **F8** to stop an alert.
+- **Timers:** named countdowns persist across app restarts and notify at 10 minutes, 3 minutes, and completion.
+- **Notes:** a companion notes window opens with RustToolkit; organize Rust notes into folders.
+- **Desktop controls:** minimize to the system tray, optionally start with Windows, and optionally prevent Windows from sleeping while the app runs.
+- **Rust+:** connect or disconnect Steam, receive pairing and alarm notifications, view a paired map, read smart-device states, and manually control paired Smart Switches.
+
+## Build from source
+
+Requirements: Windows and the **.NET 10 SDK**. From the repository root, run:
 
 ```powershell
 dotnet run --project .\csharp\RustToolkit.Desktop\RustToolkit.Desktop.csproj
 ```
 
-Build the solution with:
+Build the solution:
 
 ```powershell
 dotnet build .\csharp\RustToolkit.sln
 ```
 
-## Project website
+See [`csharp/README.md`](./csharp/README.md) for development notes.
 
-The English-language landing page lives in [`site/`](./site/) and will be published to [dekerit.github.io/RustToolkit](https://dekerit.github.io/RustToolkit/) by GitHub Actions. Enable **Settings → Pages → Build and deployment → GitHub Actions** before the first deployment.
+## Data, privacy, and limitations
 
-To preview it locally in PowerShell:
+- Crafting recipes and item icons are fetched from the unofficial [Rust Items API](https://rust-api.tafu.casa/) and cached under `%LOCALAPPDATA%\RustToolkit\crafting` for offline use. The calculator reports game ingredients, not market prices.
+- Maps and device states refresh when requested. Automatic smart-device routines and a separate raid-cost calculator are not currently available.
+- Rust+ credentials are protected for the current Windows user with DPAPI. App settings, timers, and cached recipes are stored locally under `%LOCALAPPDATA%\RustToolkit`.
+- Rust+ pairing depends on Steam, Facepunch, and the third-party RustPlusApi package; their services and APIs may change.
 
-```powershell
-$preview = Join-Path $env:TEMP "rusttoolkit-site"
-New-Item -ItemType Directory -Path $preview -Force | Out-Null
-Copy-Item .\site\* $preview -Recurse -Force
-$screenshots = Join-Path $preview "assets\screenshots"
-New-Item -ItemType Directory -Path $screenshots -Force | Out-Null
-Copy-Item .\assets\screenshots\*.png $screenshots -Force
-python -m http.server 8000 --directory $preview
-```
+## License
 
-After choosing to continue or connect, subsequent launches open directly to the local alarm page. Disconnecting returns to the welcome screen. The connected Steam ID and pairing status appear on the **Rust+** page. Select a saved server and choose **Load Map** to display its map.
-
-## Data sources and limitations
-
-- Crafting recipes and item PNGs come from the unofficial [Rust Items API](https://rust-api.tafu.casa/). The catalog and requested icons are cached under `%LOCALAPPDATA%\RustToolkit\crafting` for offline use. The calculator totals game materials, not market prices; the third-party API may change or become unavailable.
-- Rust+ map and device data refresh only when requested. Automatic device controls, continuous map updates, and a separate raid-cost calculator are not implemented.
-- RustToolkit copies the root-level `notes.exe` into its output and opens it at startup. Its working directory is `%LOCALAPPDATA%\RustToolkit\Notes`, separate from the build/install folder.
+RustToolkit's original code and assets are proprietary. The repository's [`LICENSE`](./LICENSE) describes the limited permissions for viewing the source and using unmodified releases. Third-party dependencies retain their own licenses; see [`csharp/THIRD-PARTY-NOTICES.md`](./csharp/THIRD-PARTY-NOTICES.md).
 
 ## Roadmap
 
-### Done
+- [ ] Validate Steam sign-in, disconnect, Smart Alarm notifications, pairing, map loading, and device controls with a real Rust+ account and server.
+- [ ] Improve Rust+ reconnect behavior and map-marker controls.
+- [ ] Add optional smart-device automations and clearer first-use pairing guidance.
+- [ ] Consider a separate raid-cost calculator only when its data sources can be verified.
 
-- [x] Create the WPF/.NET 10 desktop application shell.
-- [x] Implement the local alarm, F8 acknowledgement, multi-monitor alert, and tray controls.
-- [x] Add persistent named countdown timers and Windows startup setting.
-- [x] Add keep-awake setting and first-run onboarding with an account-free path.
-- [x] Add the crafting calculator with recipe icons, recursive materials, and persistent favorites.
-- [x] Add Rust+ Steam pairing, encrypted local profile storage, and push-alarm notifications.
-- [x] Save paired servers and smart devices.
-- [x] Load a paired server map and display monuments, players, and selected event markers.
-- [x] Read Smart Switch, Smart Alarm, and Storage Monitor state; manually control Smart Switches.
-- [x] Add Rust+ disconnect and return-to-welcome flow.
-- [x] Add the current application screenshots to this page.
-- [x] Remove the superseded Python application and its Python build/test code.
+---
 
-### Next
-
-- [ ] Validate sign-in, disconnect, Smart Alarm notifications, server pairing, map loading, and device controls with a real Rust+ account/server.
-- [ ] Improve Rust+ reconnect behavior and add clearer map marker controls or optional refresh.
-- [ ] Add user-configurable smart-device automations.
-- [ ] Add setup guidance for server/device pairing and other first-use workflows.
-- [ ] Implement a separate raid-cost calculator only after every value has a verified source.
-- [ ] Verify the bundled notes app and its note-storage behavior; confirm source and redistribution terms before packaging a public release.
-- [ ] Prepare and test a distributable Windows release.
-
-## Build and third-party notices
-
-See [`csharp/README.md`](./csharp/README.md) for development details and [`csharp/THIRD-PARTY-NOTICES.md`](./csharp/THIRD-PARTY-NOTICES.md) for NuGet dependency attribution.
-
-## Disclaimer
-
-RustToolkit is a fan-made project and is not affiliated with or endorsed by Facepunch Studios. Rust and related names are trademarks or properties of their respective owners.
+RustToolkit is an independent fan-made project and is not affiliated with or endorsed by Facepunch Studios. Rust and related names are trademarks or properties of their respective owners.

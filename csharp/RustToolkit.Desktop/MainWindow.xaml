@@ -2,13 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="RustToolkit"
+        Icon="pack://application:,,,/Assets/RustToolkit.ico"
         Width="1120"
         Height="760"
         MinWidth="900"
         MinHeight="620"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource AppBackground}"
-        Foreground="#F4F6F8"
+        Foreground="{StaticResource TextPrimaryBrush}"
         FontFamily="Segoe UI"
         Loaded="Window_Loaded"
         Closing="Window_Closing">
@@ -20,46 +21,85 @@
 
         <Border x:Name="NavigationPanel"
                 Grid.Column="0"
-                Background="#171C23"
-                BorderBrush="#29323C"
+                Background="{StaticResource NavigationBackground}"
+                BorderBrush="{StaticResource PanelBorderBrush}"
                 BorderThickness="0,0,1,0">
-            <DockPanel Margin="16">
+            <DockPanel Margin="14">
                 <StackPanel DockPanel.Dock="Top">
-                    <TextBlock Text="RUSTTOOLKIT"
-                               FontSize="17"
+                    <StackPanel Orientation="Horizontal" Margin="4,7,4,24">
+                        <Border Width="38"
+                                Height="38"
+                                CornerRadius="10"
+                                Background="{StaticResource AccentBrush}">
+                            <TextBlock Text="RT"
+                                       Foreground="{StaticResource AccentForegroundBrush}"
+                                       FontFamily="Cascadia Code"
+                                       FontWeight="Bold"
+                                       FontSize="13"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                            <TextBlock Text="RUSTTOOLKIT"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource TextPrimaryBrush}" />
+                            <TextBlock Text="DESKTOP FIELD KIT"
+                                       FontFamily="Cascadia Code"
+                                       FontSize="8"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       Margin="0,3,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Border Height="1"
+                            Background="{StaticResource PanelBorderBrush}"
+                            Margin="4,0,4,18" />
+                    <TextBlock Text="TOOLKIT"
+                               FontFamily="Cascadia Code"
+                               FontSize="9"
                                FontWeight="Bold"
-                               Foreground="#F4F6F8"
-                               Margin="7,8,7,30" />
-                    <Button Content="Raid Alarm"
-                            HorizontalContentAlignment="Left"
-                            Margin="0,0,0,7"
-                            Click="ShowAlarmPage_Click" />
-                    <Button Content="Timers"
-                            HorizontalContentAlignment="Left"
-                            Margin="0,0,0,7"
-                            Click="ShowTimersPage_Click" />
-                    <Button Content="Crafting"
-                            HorizontalContentAlignment="Left"
-                            Margin="0,0,0,7"
-                            Click="ShowCraftingPage_Click" />
-                    <Button Content="Rust+"
-                            HorizontalContentAlignment="Left"
-                            Margin="0,0,0,7"
-                            Click="ShowRustPlusPage_Click" />
-                    <Button Content="Settings"
-                            HorizontalContentAlignment="Left"
-                            Click="ShowSettingsPage_Click" />
+                               Foreground="{StaticResource MutedBrush}"
+                               Margin="10,0,0,9" />
+                    <ToggleButton x:Name="AlarmNavigationButton"
+                                  Content="01   Raid Alarm"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Margin="0,0,0,4"
+                                  Click="ShowAlarmPage_Click" />
+                    <ToggleButton x:Name="TimersNavigationButton"
+                                  Content="02   Timers"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Margin="0,0,0,4"
+                                  Click="ShowTimersPage_Click" />
+                    <ToggleButton x:Name="CraftingNavigationButton"
+                                  Content="03   Crafting"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Margin="0,0,0,4"
+                                  Click="ShowCraftingPage_Click" />
+                    <ToggleButton x:Name="RustPlusNavigationButton"
+                                  Content="04   Rust+"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Margin="0,0,0,4"
+                                  Click="ShowRustPlusPage_Click" />
+                    <ToggleButton x:Name="SettingsNavigationButton"
+                                  Content="05   Settings"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Click="ShowSettingsPage_Click" />
                 </StackPanel>
 
-                <TextBlock DockPanel.Dock="Bottom"
-                           Text="LOCAL DESKTOP APP"
-                           Foreground="{StaticResource MutedBrush}"
-                           FontSize="10"
-                           Margin="7,18,7,4" />
+                <StackPanel DockPanel.Dock="Bottom" Margin="4,18,4,4">
+                    <Border Height="1"
+                            Background="{StaticResource PanelBorderBrush}"
+                            Margin="0,0,0,12" />
+                    <TextBlock Text="WINDOWS  /  LOCAL TOOLS"
+                               Foreground="{StaticResource MutedBrush}"
+                               FontFamily="Cascadia Code"
+                               FontSize="8" />
+                </StackPanel>
             </DockPanel>
         </Border>
 
-        <Border Grid.Column="1" Padding="30,26">
+        <Border Grid.Column="1" Padding="34,30">
             <ContentControl x:Name="PageHost" />
         </Border>
     </Grid>

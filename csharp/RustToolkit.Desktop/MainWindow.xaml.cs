@@ -8,6 +8,7 @@ using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using RustToolkit.Desktop.Services;
 using RustToolkit.Desktop.Views;
+using Drawing = System.Drawing;
 using Forms = System.Windows.Forms;
 
 namespace RustToolkit.Desktop;
@@ -31,6 +32,7 @@ public partial class MainWindow : Window
     private readonly SettingsPage _settingsPage;
     private readonly List<AlarmOverlayWindow> _alarmWindows = [];
     private readonly Forms.NotifyIcon _trayIcon;
+    private readonly Drawing.Icon _applicationIcon;
     private HwndSource? _windowSource;
     private bool _hotkeyRegistered;
     private bool _exitRequested;
@@ -90,16 +92,25 @@ public partial class MainWindow : Window
             }
         }
 
-        _trayIcon = CreateTrayIcon();
+        _applicationIcon = LoadApplicationIcon();
+        _trayIcon = CreateTrayIcon(_applicationIcon);
         PageHost.Content = _preferences.OnboardingCompleted ? _alarmPage : _welcomePage;
         SetNavigationVisible(_preferences.OnboardingCompleted);
+        SetNavigationSelection(_preferences.OnboardingCompleted ? _alarmPage : null);
     }
 
-    private static Forms.NotifyIcon CreateTrayIcon()
+    private static Drawing.Icon LoadApplicationIcon()
+    {
+        var executablePath = Path.Combine(AppContext.BaseDirectory, "RustToolkit.Desktop.exe");
+        return Drawing.Icon.ExtractAssociatedIcon(executablePath)
+            ?? throw new IOException($"Could not load the application icon from {executablePath}.");
+    }
+
+    private static Forms.NotifyIcon CreateTrayIcon(Drawing.Icon applicationIcon)
     {
         var icon = new Forms.NotifyIcon
         {
-            Icon = System.Drawing.SystemIcons.Application,
+            Icon = applicationIcon,
             Text = "RustToolkit",
             Visible = true,
         };
@@ -177,6 +188,7 @@ public partial class MainWindow : Window
 
     private void NavigateTo(object page)
     {
+        SetNavigationSelection(page);
         if (ReferenceEquals(PageHost.Content, page))
         {
             return;
@@ -201,6 +213,15 @@ public partial class MainWindow : Window
         transform.BeginAnimation(
             TranslateTransform.YProperty,
             new DoubleAnimation(8, 0, duration) { EasingFunction = easing });
+    }
+
+    private void SetNavigationSelection(object? page)
+    {
+        AlarmNavigationButton.IsChecked = ReferenceEquals(page, _alarmPage);
+        TimersNavigationButton.IsChecked = ReferenceEquals(page, _timersPage);
+        CraftingNavigationButton.IsChecked = ReferenceEquals(page, _craftingPage);
+        RustPlusNavigationButton.IsChecked = ReferenceEquals(page, _rustPlusPage);
+        SettingsNavigationButton.IsChecked = ReferenceEquals(page, _settingsPage);
     }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -485,6 +506,7 @@ public partial class MainWindow : Window
         _windowSource?.RemoveHook(WindowMessageHook);
         _trayIcon.Visible = false;
         _trayIcon.Dispose();
+        _applicationIcon.Dispose();
         Close();
     }
 
