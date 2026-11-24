@@ -793,7 +793,7 @@ h2 span {
 
 .screen-gallery {
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: 15px;
 }
@@ -803,10 +803,6 @@ h2 span {
   margin: 0;
   border: 1px solid #474747;
   background: #141414;
-}
-
-.screen-shot-main {
-  grid-row: span 2;
 }
 
 .shot-label {
@@ -837,10 +833,6 @@ h2 span {
   border-top: 1px solid #393939;
   color: #A5A5A5;
   font-size: 11px;
-}
-
-.screen-shot-side img {
-  aspect-ratio: 1128 / 776;
 }
 
 .setup-section {
@@ -1333,10 +1325,6 @@ h2 span {
   .screen-gallery {
     grid-template-columns: 1fr;
     gap: 12px;
-  }
-
-  .screen-shot-main {
-    grid-row: auto;
   }
 
   .setup-section {

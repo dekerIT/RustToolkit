@@ -30,14 +30,9 @@
                         <Border Width="38"
                                 Height="38"
                                 CornerRadius="10"
-                                Background="{StaticResource AccentBrush}">
-                            <TextBlock Text="RT"
-                                       Foreground="{StaticResource AccentForegroundBrush}"
-                                       FontFamily="Cascadia Code"
-                                       FontWeight="Bold"
-                                       FontSize="13"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" />
+                                Background="Transparent">
+                            <Image Source="pack://application:,,,/Assets/RustToolkit.png"
+                                   Stretch="Uniform" />
                         </Border>
                         <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
                             <TextBlock Text="RUSTTOOLKIT"
@@ -81,8 +76,13 @@
                                   Style="{StaticResource SidebarNavigationStyle}"
                                   Margin="0,0,0,4"
                                   Click="ShowRustPlusPage_Click" />
+                    <ToggleButton x:Name="RaidPlannerNavigationButton"
+                                  Content="05   Raid Planner"
+                                  Style="{StaticResource SidebarNavigationStyle}"
+                                  Margin="0,0,0,4"
+                                  Click="ShowRaidPlannerPage_Click" />
                     <ToggleButton x:Name="SettingsNavigationButton"
-                                  Content="05   Settings"
+                                  Content="06   Settings"
                                   Style="{StaticResource SidebarNavigationStyle}"
                                   Click="ShowSettingsPage_Click" />
                 </StackPanel>

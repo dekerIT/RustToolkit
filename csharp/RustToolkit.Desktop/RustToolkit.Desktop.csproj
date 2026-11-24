@@ -14,6 +14,9 @@
     <Resource Include="..\..\assets\RustToolkit.ico">
       <Link>Assets\RustToolkit.ico</Link>
     </Resource>
+    <Resource Include="..\..\assets\RustToolkit.png">
+      <Link>Assets\RustToolkit.png</Link>
+    </Resource>
     <Content Include="..\..\assets\local notes\notes.exe">
       <Link>notes\notes.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -26,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4370.26" />
     <PackageReference Include="RustPlusApi" Version="2.0.0-beta.10" />
     <PackageReference Include="RustPlusApi.Fcm" Version="2.0.0-beta.10" />
     <PackageReference Include="RustPlusApi.Fcm.Registration" Version="2.0.0-beta.10" />

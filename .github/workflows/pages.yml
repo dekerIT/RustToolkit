@@ -38,6 +38,7 @@ jobs:
           cp assets/screenshots/settings.png _site/assets/screenshots/
           cp assets/screenshots/raid-alarm.png _site/assets/screenshots/
           cp assets/screenshots/timers.png _site/assets/screenshots/
+          cp assets/screenshots/raid-planner.png _site/assets/screenshots/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

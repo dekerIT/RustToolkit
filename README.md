@@ -26,12 +26,13 @@ RustToolkit is an independent Windows application for players who want useful Ru
 
 | Local tools — no account needed | Rust+ tools — sign in and pair in-game |
 | --- | --- |
-| Crafting calculator with recipe icons and favorites | Smart Alarm notifications and full-screen alerts |
+| Rust item search, crafting calculator, and raid planner | Smart Alarm notifications and full-screen alerts |
 | Saved countdown timers and Rust notes organized in folders | Paired server map and markers |
 | Siren test, Windows startup, and keep-awake option | Smart-device status and Smart Switch controls |
 
 <p align="center">
-  <img src="assets/screenshots/crafting.png" width="88%" alt="RustToolkit crafting calculator">
+  <img src="assets/screenshots/crafting.png" width="49%" alt="RustToolkit crafting calculator">
+  <img src="assets/screenshots/raid-planner.png" width="49%" alt="RustToolkit raid planner">
 </p>
 <p align="center">
   <img src="assets/screenshots/raid-alarm.png" width="49%" alt="RustToolkit raid alarm">
@@ -44,10 +45,9 @@ RustToolkit is an independent Windows application for players who want useful Ru
 
 ## Download
 
-Choose the setup experience or a portable archive from the [latest GitHub release](https://github.com/dekerIT/RustToolkit/releases/latest):
+Download the Windows installer from the [latest GitHub release](https://github.com/dekerIT/RustToolkit/releases/latest):
 
 - **Installer — `RustToolkit-Setup-vX.Y.Z.exe`:** per-user setup, Start Menu shortcut, optional desktop shortcut, and uninstall support.
-- **Portable — `RustToolkit-vX.Y.Z-win-x64.zip`:** extract the archive and run `RustToolkit.Desktop.exe`. Keep the extracted files together.
 
 ## Get started
 
@@ -60,10 +60,11 @@ Steam sign-in alone does not pair a server. Disconnect from the **Rust+** page t
 
 ## What it does
 
-- **Crafting:** search Rust items, choose an amount, and see craft batches, nested ingredients, workbench requirements, base-material totals, and favorites.
+- **Crafting & item search:** search RustHelp's item catalog for images, recipes, research costs, and listed loot-source names. Choose an amount to see craft batches, nested ingredients, workbench requirements, base-material totals, and favorites.
+- **Raid Planner:** compare Rustly's explosive methods by estimated sulfur cost and time. Set the target count, current HP, hard/soft side, and owned explosives to estimate what remains to bring or craft.
 - **Raid Alarm:** real Smart Alarm events can play a looping siren and show a full-screen alert on connected monitors. **Test siren** only tests the local sound; press **F8** to stop an alert.
 - **Timers:** named countdowns persist across app restarts and notify at 10 minutes, 3 minutes, and completion.
-- **Notes:** a companion notes window opens with RustToolkit; organize Rust notes into folders.
+- **Notes:** the installer includes the companion Notes app, which opens automatically with RustToolkit. Organize Rust notes into folders.
 - **Desktop controls:** minimize to the system tray, optionally start with Windows, and optionally prevent Windows from sleeping while the app runs.
 - **Rust+:** connect or disconnect Steam, receive pairing and alarm notifications, view a paired map, read smart-device states, and manually control paired Smart Switches.
 
@@ -85,9 +86,11 @@ See [`csharp/README.md`](./csharp/README.md) for development notes.
 
 ## Data, privacy, and limitations
 
-- Crafting recipes and item icons are fetched from the unofficial [Rust Items API](https://rust-api.tafu.casa/) and cached under `%LOCALAPPDATA%\RustToolkit\crafting` for offline use. The calculator reports game ingredients, not market prices.
-- Maps and device states refresh when requested. Automatic smart-device routines and a separate raid-cost calculator are not currently available.
-- Rust+ credentials are protected for the current Windows user with DPAPI. App settings, timers, and cached recipes are stored locally under `%LOCALAPPDATA%\RustToolkit`.
+- Crafting item, recipe, research, loot-source, and image data are read from [RustHelp](https://rusthelp.com/) in an embedded WebView2 browser; the catalog is cached under `%LOCALAPPDATA%\RustToolkit\rusthelp`. The WebView2 Runtime is required for live RustHelp data.
+- Raid costs and estimates continue to come from the [Rustly API](https://rustly.com/developers/api/).
+- Custom-HP raid results are estimates: Rustly provides full-health explosive counts but not per-hit damage, so linear scaling cannot model overkill or random damage. Costs are game-material costs, not market prices.
+- Maps and device states refresh when requested. Automatic smart-device routines are not currently available.
+- Rust+ credentials are protected for the current Windows user with DPAPI. App settings, timers, and cached item data are stored locally under `%LOCALAPPDATA%\RustToolkit`.
 - Rust+ pairing depends on Steam, Facepunch, and the third-party RustPlusApi package; their services and APIs may change.
 
 ## License
@@ -99,7 +102,7 @@ RustToolkit's original code and assets are proprietary. The repository's [`LICEN
 - [ ] Validate Steam sign-in, disconnect, Smart Alarm notifications, pairing, map loading, and device controls with a real Rust+ account and server.
 - [ ] Improve Rust+ reconnect behavior and map-marker controls.
 - [ ] Add optional smart-device automations and clearer first-use pairing guidance.
-- [ ] Consider a separate raid-cost calculator only when its data sources can be verified.
+- [ ] Validate RustHelp crafting and loot data and Rustly raid data against in-game values.
 
 ---
 

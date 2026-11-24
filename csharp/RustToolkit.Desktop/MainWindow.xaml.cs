@@ -27,7 +27,9 @@ public partial class MainWindow : Window
     private readonly AlarmPage _alarmPage;
     private readonly TimersPage _timersPage;
     private readonly CraftingPage _craftingPage;
-    private readonly CraftingDataService _craftingDataService;
+    private readonly RaidPlannerPage _raidPlannerPage;
+    private readonly RustlyApiService _rustlyApiService;
+    private readonly RustHelpItemService _rustHelpItemService;
     private readonly RustPlusPage _rustPlusPage;
     private readonly SettingsPage _settingsPage;
     private readonly List<AlarmOverlayWindow> _alarmWindows = [];
@@ -54,10 +56,12 @@ public partial class MainWindow : Window
         _preferences = LoadPreferences();
         _keepAwakeService = new KeepAwakeService();
         _keepAwakeEnabled = _preferences.KeepAwakeEnabled;
+        _rustlyApiService = new RustlyApiService();
+        _rustHelpItemService = new RustHelpItemService();
         _alarmPage = new AlarmPage(_alarmService);
         _timersPage = new TimersPage(_timerService);
-        _craftingDataService = new CraftingDataService();
-        _craftingPage = new CraftingPage(_craftingDataService, _preferencesStore, _preferences);
+        _craftingPage = new CraftingPage(_rustHelpItemService, _preferencesStore, _preferences);
+        _raidPlannerPage = new RaidPlannerPage(_rustlyApiService, _rustHelpItemService);
         _rustPlusPage = new RustPlusPage(_rustPlusService);
         _welcomePage = new WelcomePage();
         _welcomePage.ConnectRequested += WelcomePage_ConnectRequested;
@@ -178,6 +182,8 @@ public partial class MainWindow : Window
 
     private void ShowRustPlusPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_rustPlusPage);
 
+    private void ShowRaidPlannerPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_raidPlannerPage);
+
     private void ShowSettingsPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_settingsPage);
 
     private void SetNavigationVisible(bool visible)
@@ -221,6 +227,7 @@ public partial class MainWindow : Window
         TimersNavigationButton.IsChecked = ReferenceEquals(page, _timersPage);
         CraftingNavigationButton.IsChecked = ReferenceEquals(page, _craftingPage);
         RustPlusNavigationButton.IsChecked = ReferenceEquals(page, _rustPlusPage);
+        RaidPlannerNavigationButton.IsChecked = ReferenceEquals(page, _raidPlannerPage);
         SettingsNavigationButton.IsChecked = ReferenceEquals(page, _settingsPage);
     }
 
@@ -482,7 +489,8 @@ public partial class MainWindow : Window
         _alarmService.Stop();
         _timerService.Dispose();
         _rustPlusService.Dispose();
-        _craftingDataService.Dispose();
+        _rustlyApiService.Dispose();
+        _rustHelpItemService.Dispose();
         try
         {
             _keepAwakeService.Dispose();
