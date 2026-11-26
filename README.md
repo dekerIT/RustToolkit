@@ -28,18 +28,17 @@ RustToolkit is an independent Windows application for players who want useful Ru
 | --- | --- |
 | Rust item search, crafting calculator, and raid planner | Smart Alarm notifications and full-screen alerts |
 | Saved countdown timers, item favorites, and Rust Notes graph view | Paired server map and markers |
-| Siren test, Windows startup, and keep-awake option | Smart-device status and Smart Switch controls |
+| Windows startup and keep-awake option | Smart-device status and Smart Switch controls |
 
 <p align="center">
-  <img src="assets/screenshots/crafting.png" width="49%" alt="RustToolkit crafting calculator">
-  <img src="assets/screenshots/raid-planner.png" width="49%" alt="RustToolkit raid planner">
-</p>
-<p align="center">
-  <img src="assets/screenshots/raid-alarm.png" width="49%" alt="RustToolkit raid alarm">
   <img src="assets/screenshots/timers.png" width="49%" alt="RustToolkit countdown timers">
+  <img src="assets/screenshots/crafting.png" width="49%" alt="RustToolkit crafting calculator">
 </p>
 <p align="center">
   <img src="assets/screenshots/rustplus.png" width="49%" alt="RustToolkit Rust+ connection and server map">
+  <img src="assets/screenshots/raid-planner.png" width="49%" alt="RustToolkit raid planner">
+</p>
+<p align="center">
   <img src="assets/screenshots/settings.png" width="49%" alt="RustToolkit Windows startup and keep-awake settings">
 </p>
 

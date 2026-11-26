@@ -57,17 +57,13 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
                 await _service.ConnectAsync();
             }
         }
-        catch (Exception exception) when (
-            exception is OperationCanceledException
-                or IOException
-                or UnauthorizedAccessException
-                or InvalidOperationException
-                or HttpRequestException
-                or WebSocketException
-                or CryptographicException
-                or TimeoutException)
+        catch (OperationCanceledException)
         {
-            ShowError(exception.Message);
+            ShowError("The Rust+ connection attempt was cancelled.");
+        }
+        catch (Exception exception)
+        {
+            ShowError(FormatException(exception));
         }
         finally
         {
@@ -178,18 +174,13 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
             var snapshot = await _service.LoadMapAsync(server);
             DisplayMap(snapshot, server.Name);
         }
-        catch (Exception exception) when (
-            exception is OperationCanceledException
-                or IOException
-                or UnauthorizedAccessException
-                or InvalidOperationException
-                or HttpRequestException
-                or WebSocketException
-                or CryptographicException
-                or TimeoutException
-                or NotSupportedException)
+        catch (OperationCanceledException)
         {
-            MapStatusText.Text = $"Could not load map: {exception.Message}";
+            MapStatusText.Text = "Map loading was cancelled.";
+        }
+        catch (Exception exception)
+        {
+            MapStatusText.Text = $"Could not load map: {FormatException(exception)}";
         }
         finally
         {
@@ -212,17 +203,13 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
             var state = await _service.LoadDeviceStateAsync(device);
             ShowDeviceState(device, state);
         }
-        catch (Exception exception) when (
-            exception is OperationCanceledException
-                or IOException
-                or UnauthorizedAccessException
-                or InvalidOperationException
-                or HttpRequestException
-                or WebSocketException
-                or CryptographicException
-                or TimeoutException)
+        catch (OperationCanceledException)
         {
-            DeviceStatusText.Text = $"Could not read device state: {exception.Message}";
+            DeviceStatusText.Text = "Reading the device state was cancelled.";
+        }
+        catch (Exception exception)
+        {
+            DeviceStatusText.Text = $"Could not read device state: {FormatException(exception)}";
         }
         finally
         {
@@ -246,17 +233,13 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
             var state = await _service.SetSmartSwitchValueAsync(device, requestedValue);
             ShowDeviceState(device, state);
         }
-        catch (Exception exception) when (
-            exception is OperationCanceledException
-                or IOException
-                or UnauthorizedAccessException
-                or InvalidOperationException
-                or HttpRequestException
-                or WebSocketException
-                or CryptographicException
-                or TimeoutException)
+        catch (OperationCanceledException)
         {
-            DeviceStatusText.Text = $"Could not control the Smart Switch: {exception.Message}";
+            DeviceStatusText.Text = "Updating the Smart Switch was cancelled.";
+        }
+        catch (Exception exception)
+        {
+            DeviceStatusText.Text = $"Could not control the Smart Switch: {FormatException(exception)}";
         }
         finally
         {
@@ -277,6 +260,17 @@ public partial class RustPlusPage : System.Windows.Controls.UserControl
     {
         ErrorText.Text = message;
         ErrorText.Visibility = Visibility.Visible;
+    }
+
+    private static string FormatException(Exception exception)
+    {
+        var message = $"{exception.GetType().Name}: {exception.Message}";
+        if (exception.InnerException is { } inner)
+        {
+            message += $"\n\nCaused by: {inner.GetType().Name}: {inner.Message}";
+        }
+
+        return message;
     }
 
     private void DisplayMap(RustPlusMapSnapshot snapshot, string serverName)

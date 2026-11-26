@@ -2,6 +2,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
+using System.Text.Json;
 using RustPlusApi;
 using RustPlusApi.Data.Entities;
 using RustPlusApi.Fcm;
@@ -327,7 +328,9 @@ public sealed class RustPlusConnectionService : IDisposable
         listener.Disconnected += Listener_Disconnected;
         listener.ErrorOccurred += Listener_ErrorOccurred;
         listener.PersistentIdReceived += Listener_PersistentIdReceived;
+        listener.NotificationReceived += Listener_NotificationReceived;
         listener.OnAlarmTriggered += Listener_AlarmTriggered;
+        listener.OnPairing += Listener_OnPairing;
         listener.OnServerPairing += Listener_ServerPairing;
         listener.OnEntityPairing += Listener_EntityPairing;
         _listener = listener;
@@ -406,12 +409,307 @@ public sealed class RustPlusConnectionService : IDisposable
         AlarmTriggered?.Invoke(reason.Length > 200 ? reason[..200] : reason);
     }
 
+    private void Listener_OnPairing(object? sender, FcmMessage message)
+    {
+        try
+        {
+            var data = message.Data;
+            var body = data?.Body;
+            if (body is null)
+            {
+                return;
+            }
+
+            var isServer = string.Equals(body.Type, "server", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(data?.ChannelId, "server", StringComparison.OrdinalIgnoreCase);
+            if (isServer)
+            {
+                HandleServerPairingBody(body);
+            }
+        }
+        catch (Exception exception)
+        {
+            ErrorOccurred?.Invoke(
+                $"Rust+ pairing handler failed: {exception.GetType().Name}: {exception.Message}");
+        }
+    }
+
+    private void HandleServerPairingBody(Body body)
+    {
+        var ip = body.Ip?.Trim();
+        if (string.IsNullOrWhiteSpace(ip) || body.Port is < 1 or > 65535)
+        {
+            return;
+        }
+
+        if (!int.TryParse(body.PlayerToken, out var playerToken))
+        {
+            ErrorOccurred?.Invoke(
+                $"Rust+ sent an invalid player token '{body.PlayerToken}' for {ip}:{body.Port}; the server was not saved.");
+            return;
+        }
+
+        var serverId = body.Id;
+        if (serverId == Guid.Empty)
+        {
+            ErrorOccurred?.Invoke(
+                $"Rust+ sent an invalid server id '{body.Id}' for {ip}:{body.Port}; the server was not saved.");
+            return;
+        }
+
+        RustPlusServerProfile pairedServer;
+        try
+        {
+            lock (_profileGate)
+            {
+                if (_profile is null || body.PlayerId != _profile.SteamId)
+                {
+                    ErrorOccurred?.Invoke(
+                        $"The server pairing belongs to Steam account {body.PlayerId}, but this app is signed in as {(_profile?.SteamId ?? 0)}; it was ignored.");
+                    return;
+                }
+
+                pairedServer = new RustPlusServerProfile
+                {
+                    ServerId = serverId,
+                    Name = string.IsNullOrWhiteSpace(body.Name) ? ip : body.Name!,
+                    Ip = ip,
+                    Port = body.Port,
+                    PlayerId = body.PlayerId,
+                    PlayerToken = playerToken,
+                };
+                _profile.Servers.RemoveAll(existing =>
+                    existing.ServerId != Guid.Empty && existing.ServerId == pairedServer.ServerId
+                    || existing.Ip == pairedServer.Ip && existing.Port == pairedServer.Port);
+                _profile.Servers.Add(pairedServer);
+                _store.Save(_profile);
+            }
+        }
+        catch (Exception exception)
+        {
+            ErrorOccurred?.Invoke(
+                $"Could not save the paired server: {exception.GetType().Name}: {exception.Message}");
+            return;
+        }
+
+        ServerPaired?.Invoke(pairedServer);
+        SetStatus($"Paired with {pairedServer.Name}. Rust+ notifications are active.");
+    }
+
+    private void Listener_NotificationReceived(object? sender, string json)
+    {
+        try
+        {
+            TryWriteDiagnostic(json);
+            if (TryParseServerPairing(json, out var profile, out var failure))
+            {
+                SaveServerPairing(profile);
+            }
+            else if (failure is not null)
+            {
+                ErrorOccurred?.Invoke(failure);
+            }
+        }
+        catch (Exception exception)
+        {
+            ErrorOccurred?.Invoke(
+                $"Rust+ raw notification handler failed: {exception.GetType().Name}: {exception.Message}");
+        }
+    }
+
+    private bool TryParseServerPairing(string json, out RustPlusServerProfile profile, out string? failure)
+    {
+        profile = null!;
+        failure = null;
+        using var document = JsonDocument.Parse(json);
+        var root = document.RootElement;
+        var data = root;
+        if (root.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in root.EnumerateObject())
+            {
+                if (string.Equals(property.Name, "data", StringComparison.OrdinalIgnoreCase))
+                {
+                    data = property.Value;
+                    break;
+                }
+            }
+        }
+
+        if (data.ValueKind == JsonValueKind.String)
+        {
+            var inner = data.GetString();
+            if (string.IsNullOrWhiteSpace(inner))
+            {
+                return false;
+            }
+
+            using var innerDocument = JsonDocument.Parse(inner);
+            data = innerDocument.RootElement;
+        }
+
+        if (data.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        var channel = FindString(data, "ch", "channelId", "channel");
+        var type = FindString(data, "type");
+        var isServer = string.Equals(channel, "server", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(type, "server", StringComparison.OrdinalIgnoreCase);
+        if (!isServer)
+        {
+            return false;
+        }
+
+        var ip = FindString(data, "ip", "addr", "address", "serverIp", "server_ip") ?? string.Empty;
+        var portText = FindString(data, "port", "serverPort", "server_port");
+        var name = FindString(data, "name", "serverName", "server_name", "title") ?? string.Empty;
+        var serverIdText = FindString(data, "serverId", "server_id", "id");
+        var playerIdText = FindString(data, "playerId", "player_id");
+        var playerTokenText = FindString(data, "playerToken", "player_token", "token");
+
+        if (!Guid.TryParse(serverIdText, out var serverId)
+            || serverId == Guid.Empty
+            || !ulong.TryParse(playerIdText, out var playerId)
+            || !int.TryParse(playerTokenText, out var playerToken))
+        {
+            failure =
+                $"Rust+ sent incomplete server-pairing data (serverId='{serverIdText}', playerId='{playerIdText}', token='{playerTokenText}', steamId={SteamId}). Raw: {Truncate(json, 600)}";
+            Diag($"PARSE_SERVER_FAIL {failure}");
+            return false;
+        }
+
+        if (playerId != SteamId)
+        {
+            failure =
+                $"The server pairing belongs to Steam account {playerId}, but this app is signed in as {SteamId}; it was ignored.";
+            return false;
+        }
+
+        var port = int.TryParse(portText, out var parsedPort) && parsedPort is >= 1 and <= 65535
+            ? parsedPort
+            : 0;
+
+        profile = new RustPlusServerProfile
+        {
+            ServerId = serverId,
+            Name = string.IsNullOrWhiteSpace(name) ? serverId.ToString() : name,
+            Ip = ip,
+            Port = port,
+            PlayerId = playerId,
+            PlayerToken = playerToken,
+        };
+        Diag($"PARSE_SERVER_OK {serverId} {profile.Name}");
+        return true;
+    }
+
+    private static string? FindString(JsonElement element, params string[] names)
+    {
+        foreach (var property in element.EnumerateObject())
+        {
+            foreach (var name in names)
+            {
+                if (!string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                return property.Value.ValueKind switch
+                {
+                    JsonValueKind.String => property.Value.GetString(),
+                    JsonValueKind.Number => property.Value.ToString(),
+                    JsonValueKind.True => "true",
+                    JsonValueKind.False => "false",
+                    _ => null,
+                };
+            }
+        }
+
+        foreach (var property in element.EnumerateObject())
+        {
+            if (string.Equals(property.Name, "body", StringComparison.OrdinalIgnoreCase)
+                && property.Value.ValueKind == JsonValueKind.Object)
+            {
+                return FindString(property.Value, names);
+            }
+        }
+
+        return null;
+    }
+
+    private void SaveServerPairing(RustPlusServerProfile pairedServer)
+    {
+        try
+        {
+            lock (_profileGate)
+            {
+                if (_profile is null)
+                {
+                    return;
+                }
+
+                _profile.Servers.RemoveAll(existing => existing.ServerId == pairedServer.ServerId);
+                _profile.Servers.Add(pairedServer);
+                _store.Save(_profile);
+                Diag($"SAVE_SERVER {pairedServer.ServerId} {pairedServer.Name} count={_profile.Servers.Count}");
+            }
+        }
+        catch (Exception exception)
+        {
+            Diag($"SAVE_SERVER_ERR {exception.GetType().Name}: {exception.Message}");
+            ErrorOccurred?.Invoke(
+                $"Could not save the paired server: {exception.GetType().Name}: {exception.Message}");
+            return;
+        }
+
+        ServerPaired?.Invoke(pairedServer);
+        SetStatus($"Paired with {pairedServer.Name}. Rust+ notifications are active.");
+    }
+
+    private static string Truncate(string value, int maximum)
+    {
+        value ??= string.Empty;
+        return value.Length <= maximum ? value : value[..maximum] + "…";
+    }
+
+    private static void TryWriteDiagnostic(string json)
+    {
+        try
+        {
+            var path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "RustToolkit",
+                "last-notifications.log");
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            File.AppendAllText(path, json + Environment.NewLine + "----" + Environment.NewLine);
+        }
+        catch
+        {
+        }
+    }
+
+    private static void Diag(string message)
+    {
+        try
+        {
+            var path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "RustToolkit",
+                "last-notifications.log");
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            File.AppendAllText(path, "DIAG " + message + Environment.NewLine + "----" + Environment.NewLine);
+        }
+        catch
+        {
+        }
+    }
+
     private void Listener_ServerPairing(object? sender, Notification<ServerEvent?> notification)
     {
         var server = notification.Data;
         if (server is null || string.IsNullOrWhiteSpace(server.Ip) || server.Port is < 1 or > 65535)
         {
-            ErrorOccurred?.Invoke("Rust+ sent incomplete server-pairing data; the server was not saved.");
             return;
         }
 
@@ -422,7 +720,8 @@ public sealed class RustPlusConnectionService : IDisposable
             {
                 if (_profile is null || notification.PlayerId != _profile.SteamId)
                 {
-                    ErrorOccurred?.Invoke("The server pairing belongs to a different Steam account and was ignored.");
+                    ErrorOccurred?.Invoke(
+                        $"The server pairing belongs to Steam account {notification.PlayerId}, but this app is signed in as {(_profile?.SteamId ?? 0)}; it was ignored.");
                     return;
                 }
 
@@ -442,10 +741,10 @@ public sealed class RustPlusConnectionService : IDisposable
                 _store.Save(_profile);
             }
         }
-        catch (Exception exception) when (
-            exception is IOException or UnauthorizedAccessException or CryptographicException)
+        catch (Exception exception)
         {
-            ErrorOccurred?.Invoke($"Could not securely save the paired server: {exception.Message}");
+            ErrorOccurred?.Invoke(
+                $"Could not save the paired server: {exception.GetType().Name}: {exception.Message}");
             return;
         }
 
@@ -458,7 +757,8 @@ public sealed class RustPlusConnectionService : IDisposable
         var entity = notification.Data;
         if (entity is null || entity.EntityId is not > 0 || notification.ServerId == Guid.Empty)
         {
-            ErrorOccurred?.Invoke("Rust+ sent incomplete smart-device pairing data; the device was not saved.");
+            ErrorOccurred?.Invoke(
+                $"Rust+ sent incomplete smart-device pairing data (entityId={entity?.EntityId}, serverId={notification.ServerId}, type={entity?.EntityType}); the device was not saved.");
             return;
         }
 
@@ -470,7 +770,10 @@ public sealed class RustPlusConnectionService : IDisposable
                 if (_profile is null || notification.PlayerId != _profile.SteamId
                     || !_profile.Servers.Any(server => server.ServerId == notification.ServerId))
                 {
-                    ErrorOccurred?.Invoke("The smart-device pairing does not match a saved server and Steam account; it was ignored.");
+                    Diag(
+                        $"ENTITY_REJECT serverId={notification.ServerId} playerId={notification.PlayerId} steamId={_profile?.SteamId ?? 0} servers={_profile?.Servers.Count ?? 0}");
+                    ErrorOccurred?.Invoke(
+                        $"The smart-device pairing (playerId={notification.PlayerId}, serverId={notification.ServerId}) does not match the signed-in account (steamId={_profile?.SteamId ?? 0}) or a saved server; it was ignored.");
                     return;
                 }
 
@@ -492,10 +795,10 @@ public sealed class RustPlusConnectionService : IDisposable
                 _store.Save(_profile);
             }
         }
-        catch (Exception exception) when (
-            exception is IOException or UnauthorizedAccessException or CryptographicException)
+        catch (Exception exception)
         {
-            ErrorOccurred?.Invoke($"Could not securely save the paired smart device: {exception.Message}");
+            ErrorOccurred?.Invoke(
+                $"Could not save the paired smart device: {exception.GetType().Name}: {exception.Message}");
             return;
         }
 
@@ -551,7 +854,9 @@ public sealed class RustPlusConnectionService : IDisposable
         _listener.Disconnected -= Listener_Disconnected;
         _listener.ErrorOccurred -= Listener_ErrorOccurred;
         _listener.PersistentIdReceived -= Listener_PersistentIdReceived;
+        _listener.NotificationReceived -= Listener_NotificationReceived;
         _listener.OnAlarmTriggered -= Listener_AlarmTriggered;
+        _listener.OnPairing -= Listener_OnPairing;
         _listener.OnServerPairing -= Listener_ServerPairing;
         _listener.OnEntityPairing -= Listener_EntityPairing;
         _listener.Dispose();

@@ -24,7 +24,6 @@ public partial class MainWindow : Window
     private readonly AlarmService _alarmService;
     private readonly CountdownTimerService _timerService;
     private readonly WelcomePage _welcomePage;
-    private readonly AlarmPage _alarmPage;
     private readonly TimersPage _timersPage;
     private readonly CraftingPage _craftingPage;
     private readonly RaidPlannerPage _raidPlannerPage;
@@ -58,7 +57,6 @@ public partial class MainWindow : Window
         _keepAwakeEnabled = _preferences.KeepAwakeEnabled;
         _rustlyApiService = new RustlyApiService();
         _rustHelpItemService = new RustHelpItemService();
-        _alarmPage = new AlarmPage(_alarmService);
         _timersPage = new TimersPage(_timerService);
         _craftingPage = new CraftingPage(_rustHelpItemService, _preferencesStore, _preferences);
         _raidPlannerPage = new RaidPlannerPage(_rustlyApiService, _rustHelpItemService);
@@ -98,9 +96,9 @@ public partial class MainWindow : Window
 
         _applicationIcon = LoadApplicationIcon();
         _trayIcon = CreateTrayIcon(_applicationIcon);
-        PageHost.Content = _preferences.OnboardingCompleted ? _alarmPage : _welcomePage;
+        PageHost.Content = _preferences.OnboardingCompleted ? _craftingPage : _welcomePage;
         SetNavigationVisible(_preferences.OnboardingCompleted);
-        SetNavigationSelection(_preferences.OnboardingCompleted ? _alarmPage : null);
+        SetNavigationSelection(_preferences.OnboardingCompleted ? _craftingPage : null);
     }
 
     private static Drawing.Icon LoadApplicationIcon()
@@ -120,7 +118,6 @@ public partial class MainWindow : Window
         };
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Show RustToolkit", null, (_, _) => ShowWindow());
-        menu.Items.Add("Test siren", null, (_, _) => CurrentAlarmService()?.Trigger("TEST: Tray siren check"));
         menu.Items.Add("Stop Alarm", null, (_, _) => CurrentAlarmService()?.Stop());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => CurrentWindow()?.ExitApplication());
@@ -160,7 +157,6 @@ public partial class MainWindow : Window
         _windowSource = HwndSource.FromHwnd(handle);
         _windowSource?.AddHook(WindowMessageHook);
         _hotkeyRegistered = RegisterHotKey(handle, AlarmHotkeyId, ModNoRepeat, VkF8);
-        _alarmPage.SetHotkeyStatus(_hotkeyRegistered);
     }
 
     private nint WindowMessageHook(nint hwnd, int message, nint wParam, nint lParam, ref bool handled)
@@ -173,8 +169,6 @@ public partial class MainWindow : Window
 
         return nint.Zero;
     }
-
-    private void ShowAlarmPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_alarmPage);
 
     private void ShowTimersPage_Click(object sender, RoutedEventArgs e) => NavigateTo(_timersPage);
 
@@ -223,7 +217,6 @@ public partial class MainWindow : Window
 
     private void SetNavigationSelection(object? page)
     {
-        AlarmNavigationButton.IsChecked = ReferenceEquals(page, _alarmPage);
         TimersNavigationButton.IsChecked = ReferenceEquals(page, _timersPage);
         CraftingNavigationButton.IsChecked = ReferenceEquals(page, _craftingPage);
         RustPlusNavigationButton.IsChecked = ReferenceEquals(page, _rustPlusPage);
@@ -258,7 +251,7 @@ public partial class MainWindow : Window
             if (ReferenceEquals(PageHost.Content, _welcomePage))
             {
                 SetNavigationVisible(true);
-                NavigateTo(_alarmPage);
+                NavigateTo(_craftingPage);
             }
         }
     }
@@ -275,7 +268,7 @@ public partial class MainWindow : Window
     {
         CompleteOnboarding();
         SetNavigationVisible(true);
-        NavigateTo(_alarmPage);
+        NavigateTo(_craftingPage);
     }
 
     private void RustPlusPage_DisconnectCompleted(object? sender, EventArgs e)
@@ -338,7 +331,6 @@ public partial class MainWindow : Window
 
     private void AlarmService_Triggered(string reason)
     {
-        _alarmPage.SetAlarmStatus(true, reason);
         CloseAlarmWindows();
 
         foreach (var screen in Forms.Screen.AllScreens)
@@ -358,7 +350,6 @@ public partial class MainWindow : Window
 
     private void AlarmService_Stopped()
     {
-        _alarmPage.SetAlarmStatus(false, string.Empty);
         CloseAlarmWindows();
     }
 

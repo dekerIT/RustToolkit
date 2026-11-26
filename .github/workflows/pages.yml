@@ -36,7 +36,6 @@ jobs:
           cp assets/screenshots/crafting.png _site/assets/screenshots/
           cp assets/screenshots/rustplus.png _site/assets/screenshots/
           cp assets/screenshots/settings.png _site/assets/screenshots/
-          cp assets/screenshots/raid-alarm.png _site/assets/screenshots/
           cp assets/screenshots/timers.png _site/assets/screenshots/
           cp assets/screenshots/raid-planner.png _site/assets/screenshots/
       - name: Upload Pages artifact
