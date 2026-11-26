@@ -28,8 +28,12 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription:
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
+[Dirs]
+Name: "{localappdata}\RustToolkit\Notes"
+
 [Icons]
 Name: "{autoprograms}\RustToolkit"; Filename: "{app}\RustToolkit.Desktop.exe"
+Name: "{autoprograms}\Rust Notes"; Filename: "{app}\notes\notes.exe"; WorkingDir: "{localappdata}\RustToolkit\Notes"
 Name: "{autodesktop}\RustToolkit"; Filename: "{app}\RustToolkit.Desktop.exe"; Tasks: desktopicon
 
 [Run]

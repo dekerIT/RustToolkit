@@ -27,7 +27,7 @@ RustToolkit is an independent Windows application for players who want useful Ru
 | Local tools — no account needed | Rust+ tools — sign in and pair in-game |
 | --- | --- |
 | Rust item search, crafting calculator, and raid planner | Smart Alarm notifications and full-screen alerts |
-| Saved countdown timers and Rust notes organized in folders | Paired server map and markers |
+| Saved countdown timers, item favorites, and Rust Notes graph view | Paired server map and markers |
 | Siren test, Windows startup, and keep-awake option | Smart-device status and Smart Switch controls |
 
 <p align="center">
@@ -64,7 +64,7 @@ Steam sign-in alone does not pair a server. Disconnect from the **Rust+** page t
 - **Raid Planner:** compare Rustly's explosive methods by estimated sulfur cost and time. Set the target count, current HP, hard/soft side, and owned explosives to estimate what remains to bring or craft.
 - **Raid Alarm:** real Smart Alarm events can play a looping siren and show a full-screen alert on connected monitors. **Test siren** only tests the local sound; press **F8** to stop an alert.
 - **Timers:** named countdowns persist across app restarts and notify at 10 minutes, 3 minutes, and completion.
-- **Notes:** the installer includes the companion Notes app, which opens automatically with RustToolkit. Organize Rust notes into folders.
+- **Notes:** the installer bundles the redesigned Rust Notes app with graph views inspired by Obsidian. Notes launches automatically with RustToolkit and is also available from the Start Menu.
 - **Desktop controls:** minimize to the system tray, optionally start with Windows, and optionally prevent Windows from sleeping while the app runs.
 - **Rust+:** connect or disconnect Steam, receive pairing and alarm notifications, view a paired map, read smart-device states, and manually control paired Smart Switches.
 

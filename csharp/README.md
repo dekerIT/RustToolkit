@@ -8,7 +8,7 @@ This is the Windows desktop application, built with WPF on .NET 10.
 - F8 hotkey, tray menu, and minimize-to-tray behavior
 - Named countdown timers persisted under `%LOCALAPPDATA%\RustToolkit`
 - Timer notifications at 10 minutes, 3 minutes, and completion
-- Bundled companion Rust Notes app launched automatically with RustToolkit
+- Redesigned Rust Notes app with Obsidian-inspired graph views, bundled with the installer and launched with RustToolkit
 - Optional Windows startup registration
 - Optional keep-awake mode that prevents system sleep while RustToolkit is running
 - RustHelp-backed item search with recipe details, research costs, listed loot sources, item images, and persistent favorites
@@ -30,7 +30,7 @@ dotnet build csharp\RustToolkit.sln
 dotnet run --project csharp\RustToolkit.Desktop\RustToolkit.Desktop.csproj
 ```
 
-On first launch, choose **Connect Steam / Rust+** to start setup or **I'll sign in later — continue** to use local tools without an account. The installer includes the separate Notes app; RustToolkit starts it automatically, and it stores its working data under `%LOCALAPPDATA%\RustToolkit\Notes`. Rust+ setup can also be started later from its sidebar page. Steam sign-in opens a browser; the connected Steam ID and next pairing step are shown in the app. **Disconnect** removes the saved Rust+ account and paired server/device tokens from this PC, then returns to the welcome screen. Pair a server and Smart Alarm/devices through Rust+, then select a server and click **Load Map**. Map and device state refresh only when requested. The Raid Alarm's **Test siren** button checks only the local siren; real alerts arrive through Rust+ Smart Alarm notifications.
+On first launch, RustToolkit also opens the bundled Rust Notes app, which uses the shared visual style and includes graph views inspired by Obsidian. Notes data is stored under `%LOCALAPPDATA%\RustToolkit\Notes`; it can also be opened from its Start Menu shortcut. Choose **Connect Steam / Rust+** to start setup or **I'll sign in later — continue** to use local tools without an account. Rust+ setup can also be started later from its sidebar page. Steam sign-in opens a browser; the connected Steam ID and next pairing step are shown in the app. **Disconnect** removes the saved Rust+ account and paired server/device tokens from this PC, then returns to the welcome screen. Pair a server and Smart Alarm/devices through Rust+, then select a server and click **Load Map**. Map and device state refresh only when requested. The Raid Alarm's **Test siren** button checks only the local siren; real alerts arrive through Rust+ Smart Alarm notifications.
 
 ## Data sources and limitations
 
